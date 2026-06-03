@@ -1,0 +1,45 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: deploy-${{ github.repository }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: pnpm install --no-frozen-lockfile
+
+      - name: Build
+        env:
+          VITE_COMMIT_SHA: ${{ github.sha }}
+        run: pnpm build
+
+      - name: Locate build output
+        id: dist
+        run: |
+          if [ -d web/dist ]; then echo "dir=web/dist" >> "$GITHUB_OUTPUT"
+          elif [ -d dist ]; then echo "dir=dist" >> "$GITHUB_OUTPUT"
+          else echo "::error::No build output (looked for ./dist and ./web/dist)"; exit 1; fi
+
+      - name: Deploy to Cloudflare Pages
+        run: npx wrangler@3 pages deploy "${{ steps.dist.outputs.dir }}" --project-name=proappstore-${{ github.event.repository.name }} --branch=main
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: c1089bfcc43c1c6c2aa89e584e86f0bc
