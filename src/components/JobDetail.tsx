@@ -74,8 +74,8 @@ export function JobDetail({ job, currentUser, onBack }: Props) {
           bidId,
           job.id,
           currentUser.id,
-          currentUser.email ?? '',
-          currentUser.name ?? currentUser.email ?? 'Unknown',
+          '',
+          currentUser.login,
           parsed,
           message.trim() || null,
           now,
@@ -86,31 +86,10 @@ export function JobDetail({ job, currentUser, onBack }: Props) {
       try {
         await app.notifications.notifyUser(job.poster_id, {
           title: 'New bid on your job!',
-          body: `${currentUser.name ?? currentUser.email ?? 'Someone'} bid ${formatCurrency(parsed)} on "${job.title}"`,
+          body: `${currentUser.login} bid ${formatCurrency(parsed)} on "${job.title}"`,
         })
       } catch {
         // non-fatal
-      }
-
-      // Email poster (best-effort)
-      if (job.poster_email) {
-        try {
-          await app.email.send(
-            job.poster_email,
-            `New bid on "${job.title}"`,
-            `<p>Hi ${job.poster_name},</p>
-             <p><strong>${currentUser.name ?? currentUser.email ?? 'A cleaner'}</strong> has placed a bid of <strong>${formatCurrency(parsed)}</strong> on your job <strong>${job.title}</strong>.</p>
-             ${
-               message.trim()
-                 ? `<p>Their message: <em>${message.trim()}</em></p>`
-                 : ''
-             }
-             <p>Contact them at: <a href="mailto:${currentUser.email}">${currentUser.email}</a></p>
-             <p>View all bids at <a href="https://clean-up.proappstore.online">CleanMarket</a>.</p>`,
-          )
-        } catch {
-          // non-fatal
-        }
       }
 
       setSuccess('Your bid has been placed! The poster has been notified.')
@@ -314,7 +293,6 @@ export function JobDetail({ job, currentUser, onBack }: Props) {
               <BidCard
                 key={bid.id}
                 bid={bid}
-                isOwner={isOwner}
                 isCurrentUser={bid.bidder_id === currentUser?.id}
               />
             ))}
@@ -327,11 +305,9 @@ export function JobDetail({ job, currentUser, onBack }: Props) {
 
 function BidCard({
   bid,
-  isOwner,
   isCurrentUser,
 }: {
   bid: Bid
-  isOwner: boolean
   isCurrentUser: boolean
 }) {
   return (
@@ -347,12 +323,6 @@ function BidCard({
           <p className="text-xs text-gray-400 mt-0.5">{formatDate(bid.created_at)}</p>
           {bid.message && (
             <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 leading-relaxed">{bid.message}</p>
-          )}
-          {/* Show contact email to job poster so they can reach out */}
-          {isOwner && (
-            <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
-              Contact: <a href={`mailto:${bid.bidder_email}`} className="underline">{bid.bidder_email}</a>
-            </p>
           )}
         </div>
         <div className="text-right ml-4 flex-shrink-0">

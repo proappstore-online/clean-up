@@ -41,7 +41,6 @@ export function CleanMarket() {
       const { rows } = await app.db.query<{
         id: string
         poster_id: string
-        poster_email: string
         poster_name: string
         title: string
         description: string
@@ -52,7 +51,7 @@ export function CleanMarket() {
         created_at: string
         bid_count: number
       }>(
-        `SELECT j.id, j.poster_id, j.poster_email, j.poster_name, j.title,
+        `SELECT j.id, j.poster_id, j.poster_name, j.title,
                 j.description, j.location, j.lat, j.lng, j.status, j.created_at,
                 COUNT(b.id) as bid_count
          FROM jobs j

@@ -1,7 +1,6 @@
 export interface Job {
   id: string
   poster_id: string
-  poster_email: string
   poster_name: string
   title: string
   description: string
@@ -18,7 +17,6 @@ export interface Bid {
   id: string
   job_id: string
   bidder_id: string
-  bidder_email: string
   bidder_name: string
   amount: number
   message: string | null

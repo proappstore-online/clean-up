@@ -81,15 +81,15 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
         photoPaths.push(path)
       }
 
-      // Insert job
+      // Insert job — poster_email kept as empty string for schema compat
       await app.db.execute(
         `INSERT INTO jobs (id, poster_id, poster_email, poster_name, title, description, location, lat, lng, status, created_at)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'open', ?)`,
         [
           jobId,
           user.id,
-          user.email ?? '',
-          user.name ?? user.email ?? 'Unknown',
+          '',
+          user.login,
           title.trim().slice(0, 80),
           description.trim().slice(0, 1000),
           location.trim().slice(0, 120),
