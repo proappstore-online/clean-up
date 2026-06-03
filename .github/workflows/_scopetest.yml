@@ -1,0 +1,6 @@
+name: t
+on: push
+jobs:
+  t:
+    runs-on: ubuntu-latest
+    steps: []
