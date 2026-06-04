@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useProAuth } from '@proappstore/sdk/hooks'
 import { app } from '../lib/app'
 import { runMigrations } from '../lib/db'
 import { JobList } from './JobList'
+import { JobSearchBar } from './JobSearchBar'
 import { PostJobModal } from './PostJobModal'
 import { JobDetail } from './JobDetail'
 import type { Job } from '../lib/types'
@@ -17,6 +18,46 @@ export function CleanMarket() {
   const [jobs, setJobs] = useState<Job[]>([])
   const [jobsLoading, setJobsLoading] = useState(true)
   const [refreshKey, setRefreshKey] = useState(0)
+
+  // Search / filter state
+  const [inputValue, setInputValue] = useState('')
+  const [keyword, setKeyword] = useState('')
+  const [statusFilter, setStatusFilter] = useState('open')
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Debounce: update keyword 300ms after the user stops typing
+  useEffect(() => {
+    if (debounceTimer.current) clearTimeout(debounceTimer.current)
+    debounceTimer.current = setTimeout(() => {
+      setKeyword(inputValue)
+    }, 300)
+    return () => {
+      if (debounceTimer.current) clearTimeout(debounceTimer.current)
+    }
+  }, [inputValue])
+
+  // Derived filtered list — pure memo, never mutates jobs
+  const filteredJobs = useMemo(() => {
+    const lower = keyword.toLowerCase()
+    return jobs.filter((job) => {
+      const keywordMatch =
+        lower === '' ||
+        job.title.toLowerCase().includes(lower) ||
+        (job.description ?? '').toLowerCase().includes(lower)
+      const statusMatch = statusFilter === '' || job.status === statusFilter
+      return keywordMatch && statusMatch
+    })
+  }, [jobs, keyword, statusFilter])
+
+  function handleInputChange(v: string) {
+    setInputValue(v)
+  }
+
+  function handleClear() {
+    setInputValue('')
+    setKeyword('')
+    setStatusFilter('open')
+  }
 
   useEffect(() => {
     if (loading) return
@@ -154,11 +195,29 @@ export function CleanMarket() {
             </div>
           )}
 
-          <JobList
-            jobs={jobs}
-            loading={jobsLoading}
-            onSelect={handleSelectJob}
+          {/* Search bar */}
+          <JobSearchBar
+            keyword={keyword}
+            onKeywordChange={setKeyword}
+            statusFilter={statusFilter}
+            onStatusFilterChange={setStatusFilter}
+            onClear={handleClear}
+            inputValue={inputValue}
+            onInputChange={handleInputChange}
           />
+
+          {/* No-match message when search yields nothing but jobs exist */}
+          {!jobsLoading && filteredJobs.length === 0 && jobs.length > 0 ? (
+            <div className="text-center py-16 text-gray-400 dark:text-gray-500">
+              <p className="text-lg font-medium">No jobs match your search.</p>
+            </div>
+          ) : (
+            <JobList
+              jobs={filteredJobs}
+              loading={jobsLoading}
+              onSelect={handleSelectJob}
+            />
+          )}
         </>
       )}
 
