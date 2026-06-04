@@ -119,8 +119,8 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-gray-900/80 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">Post a Cleaning Job</h2>
           <button
@@ -147,7 +147,7 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Deep clean 2-bed apartment"
-              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
             />
             <p className="text-xs text-gray-400 mt-1 text-right">{title.length}/80</p>
           </div>
@@ -166,7 +166,7 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe the job, property size, special requirements…"
-              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none resize-none"
             />
             <p className="text-xs text-gray-400 mt-1 text-right">{description.length}/1000</p>
           </div>
@@ -185,7 +185,7 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="e.g. 123 Main St, Brooklyn, NY"
-              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
             />
           </div>
 

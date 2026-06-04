@@ -118,7 +118,7 @@ export function JobDetail({ job, currentUser, onBack }: Props) {
   }
 
   return (
-    <div>
+    <div className="dark:bg-gray-900 min-h-screen">
       <button
         onClick={onBack}
         className="flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:underline mb-4"

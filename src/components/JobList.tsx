@@ -20,7 +20,7 @@ export function JobList({ jobs, loading, onSelect }: Props) {
 
   if (jobs.length === 0) {
     return (
-      <div className="text-center py-20 text-gray-400">
+      <div className="text-center py-20 text-gray-400 dark:bg-gray-900 rounded-xl">
         <div className="text-5xl mb-4">🧹</div>
         <p className="text-lg font-medium">No open jobs yet</p>
         <p className="text-sm mt-1">Be the first to post a cleaning job!</p>
