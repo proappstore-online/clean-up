@@ -1,0 +1,96 @@
+{
+  "tools": [
+    {
+      "name": "list_jobs",
+      "description": "List jobs, optionally filtered by status (open/closed). Returns the most recent jobs first.",
+      "operation": "query",
+      "sql": "SELECT id, poster_id, poster_name, title, description, location, lat, lng, status, created_at FROM jobs WHERE (:status IS NULL OR status = :status) ORDER BY created_at DESC LIMIT :limit",
+      "params": {
+        "status": { "type": "string", "optional": true },
+        "limit": { "type": "integer", "default": 50, "max": 200, "optional": true }
+      },
+      "requires_auth": false
+    },
+    {
+      "name": "get_job",
+      "description": "Get a single job by its ID.",
+      "operation": "query",
+      "sql": "SELECT id, poster_id, poster_name, title, description, location, lat, lng, status, created_at FROM jobs WHERE id = :id",
+      "params": {
+        "id": { "type": "string" }
+      },
+      "requires_auth": false
+    },
+    {
+      "name": "create_job",
+      "description": "Create a new cleaning job posting. Requires authentication.",
+      "operation": "execute",
+      "sql": "INSERT INTO jobs (id, poster_id, poster_email, poster_name, title, description, location, lat, lng, status, created_at) VALUES (:__uuid, :__user_id, :poster_email, :poster_name, :title, :description, :location, :lat, :lng, 'open', :__now)",
+      "params": {
+        "poster_email": { "type": "string" },
+        "poster_name": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "location": { "type": "string" },
+        "lat": { "type": "number", "optional": true },
+        "lng": { "type": "number", "optional": true }
+      },
+      "requires_auth": true
+    },
+    {
+      "name": "update_job_status",
+      "description": "Update the status of a job (e.g. open → closed). Only the poster can do this.",
+      "operation": "execute",
+      "sql": "UPDATE jobs SET status = :status WHERE id = :id AND poster_id = :__user_id",
+      "params": {
+        "id": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "requires_auth": true
+    },
+    {
+      "name": "list_bids",
+      "description": "List all bids for a given job.",
+      "operation": "query",
+      "sql": "SELECT id, job_id, bidder_id, bidder_name, amount, message, created_at FROM bids WHERE job_id = :job_id ORDER BY amount ASC",
+      "params": {
+        "job_id": { "type": "string" }
+      },
+      "requires_auth": false
+    },
+    {
+      "name": "create_bid",
+      "description": "Submit a bid on a job. Requires authentication.",
+      "operation": "execute",
+      "sql": "INSERT INTO bids (id, job_id, bidder_id, bidder_email, bidder_name, amount, message, created_at) VALUES (:__uuid, :job_id, :__user_id, :bidder_email, :bidder_name, :amount, :message, :__now)",
+      "params": {
+        "job_id": { "type": "string" },
+        "bidder_email": { "type": "string" },
+        "bidder_name": { "type": "string" },
+        "amount": { "type": "number" },
+        "message": { "type": "string", "optional": true }
+      },
+      "requires_auth": true
+    },
+    {
+      "name": "list_my_jobs",
+      "description": "List all jobs posted by the authenticated user.",
+      "operation": "query",
+      "sql": "SELECT id, poster_name, title, description, location, status, created_at FROM jobs WHERE poster_id = :__user_id ORDER BY created_at DESC LIMIT :limit",
+      "params": {
+        "limit": { "type": "integer", "default": 50, "max": 200, "optional": true }
+      },
+      "requires_auth": true
+    },
+    {
+      "name": "list_my_bids",
+      "description": "List all bids submitted by the authenticated user.",
+      "operation": "query",
+      "sql": "SELECT id, job_id, amount, message, created_at FROM bids WHERE bidder_id = :__user_id ORDER BY created_at DESC LIMIT :limit",
+      "params": {
+        "limit": { "type": "integer", "default": 50, "max": 200, "optional": true }
+      },
+      "requires_auth": true
+    }
+  ]
+}
