@@ -1,13 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { app } from '../lib/app'
 
-interface GeoResult {
+interface GeoResultLocal {
   lat: number
   lng: number
   displayName: string
-  address: string
-  type: string
-  importance: number
 }
 
 interface Props {
@@ -27,7 +24,7 @@ export function LocationAutocomplete({
   placeholder,
   className,
 }: Props) {
-  const [results, setResults] = useState<GeoResult[]>([])
+  const [results, setResults] = useState<GeoResultLocal[]>([])
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
   const [noResults, setNoResults] = useState(false)
@@ -62,9 +59,13 @@ export function LocationAutocomplete({
     const timer = setTimeout(() => {
       app.maps
         .geocode(trimmed)
-        .then((res: GeoResult[]) => {
+        .then((res) => {
           if (version !== queryVersionRef.current) return // stale
-          const top5 = res.slice(0, 5)
+          const top5: GeoResultLocal[] = res.slice(0, 5).map((r) => ({
+            lat: r.lat,
+            lng: r.lng,
+            displayName: r.displayName,
+          }))
           setResults(top5)
           setNoResults(top5.length === 0)
           setOpen(true)
@@ -111,7 +112,7 @@ export function LocationAutocomplete({
   }
 
   const handleSelect = useCallback(
-    (result: GeoResult) => {
+    (result: GeoResultLocal) => {
       selectedRef.current = true
       onChange(result.displayName)
       onSelect(result.lat, result.lng)
