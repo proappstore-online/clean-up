@@ -1,0 +1,28 @@
+{
+  "language_switcher": {
+    "label": "اللغة"
+  },
+  "header": {
+    "title": "CleanMarket",
+    "subtitle": "ابحث عن وظائف التنظيف أو انشر العمل الذي يحتاج إلى إنجازه"
+  },
+  "nav": {
+    "browse_jobs": "تصفح الوظائف",
+    "my_jobs": "وظائفي"
+  },
+  "auth": {
+    "sign_in_prompt": "سجّل الدخول لنشر الوظائف أو تقديم عروض على الإعلانات.",
+    "sign_in_google": "تسجيل الدخول بـ Google",
+    "sign_in_github": "تسجيل الدخول بـ GitHub"
+  },
+  "jobs": {
+    "post_button": "+ نشر وظيفة",
+    "no_match": "لا توجد وظائف تطابق بحثك.",
+    "loading": "جارٍ تحميل CleanMarket…"
+  },
+  "errors": {
+    "db_failed_title": "فشل في تهيئة قاعدة البيانات",
+    "db_failed_body": "حدثت مشكلة في إعداد التطبيق. يرجى تحديث الصفحة للمحاولة مرة أخرى.",
+    "refresh": "تحديث"
+  }
+}

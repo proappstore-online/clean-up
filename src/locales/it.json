@@ -1,0 +1,28 @@
+{
+  "language_switcher": {
+    "label": "Lingua"
+  },
+  "header": {
+    "title": "CleanMarket",
+    "subtitle": "Trova lavori di pulizia o pubblica lavori da svolgere"
+  },
+  "nav": {
+    "browse_jobs": "Sfoglia Lavori",
+    "my_jobs": "I Miei Lavori"
+  },
+  "auth": {
+    "sign_in_prompt": "Accedi per pubblicare lavori o fare offerte sugli annunci.",
+    "sign_in_google": "Accedi con Google",
+    "sign_in_github": "Accedi con GitHub"
+  },
+  "jobs": {
+    "post_button": "+ Pubblica Lavoro",
+    "no_match": "Nessun lavoro corrisponde alla tua ricerca.",
+    "loading": "Caricamento CleanMarket…"
+  },
+  "errors": {
+    "db_failed_title": "Inizializzazione del database fallita",
+    "db_failed_body": "Si è verificato un problema durante la configurazione dell'app. Aggiorna la pagina per riprovare.",
+    "refresh": "Aggiorna"
+  }
+}

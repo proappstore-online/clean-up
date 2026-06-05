@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AlertTriangle, Sparkles } from 'lucide-react'
 import { useProAuth } from '@proappstore/sdk/hooks'
+import { useTranslation } from 'react-i18next'
 import { app } from '../lib/app'
 import { runMigrations } from '../lib/db'
 import { JobList } from './JobList'
@@ -8,12 +9,14 @@ import { JobSearchBar } from './JobSearchBar'
 import { PostJobModal } from './PostJobModal'
 import { JobDetail } from './JobDetail'
 import { MyJobsView } from './MyJobsView'
+import { LanguageSwitcher } from './LanguageSwitcher'
 import type { Job } from '../lib/types'
 
 type View = 'list' | 'detail' | 'mine'
 
 export function CleanMarket() {
   const { user, loading } = useProAuth(app)
+  const { t } = useTranslation()
   const [ready, setReady] = useState(false)
   const [migrationError, setMigrationError] = useState(false)
   const [view, setView] = useState<View>('list')
@@ -165,7 +168,7 @@ export function CleanMarket() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto mb-3" />
-          <p className="text-gray-500">Loading CleanMarket…</p>
+          <p className="text-gray-500">{t('jobs.loading')}</p>
         </div>
       </div>
     )
@@ -178,13 +181,13 @@ export function CleanMarket() {
           <div className="flex justify-center mb-3">
             <AlertTriangle size={48} className="text-red-500" />
           </div>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Failed to initialise database</h2>
-          <p className="text-sm text-gray-500 mb-4">There was a problem setting up the app. Please refresh the page to try again.</p>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{t('errors.db_failed_title')}</h2>
+          <p className="text-sm text-gray-500 mb-4">{t('errors.db_failed_body')}</p>
           <button
             onClick={() => window.location.reload()}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
           >
-            Refresh
+            {t('errors.refresh')}
           </button>
         </div>
       </div>
@@ -204,7 +207,7 @@ export function CleanMarket() {
                 : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
             }`}
           >
-            Browse Jobs
+            {t('nav.browse_jobs')}
           </button>
           {user && (
             <button
@@ -215,7 +218,7 @@ export function CleanMarket() {
                   : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
               }`}
             >
-              My Jobs
+              {t('nav.my_jobs')}
             </button>
           )}
         </div>
@@ -228,35 +231,38 @@ export function CleanMarket() {
             <div>
               <h1 className="flex items-center gap-2 text-2xl font-bold text-gray-900 dark:text-white">
                 <Sparkles size={28} className="text-blue-500" />
-                CleanMarket
+                {t('header.title')}
               </h1>
-              <p className="text-sm text-gray-500 mt-1">Find cleaning jobs or post work that needs doing</p>
+              <p className="text-sm text-gray-500 mt-1">{t('header.subtitle')}</p>
             </div>
-            {user && (
-              <button
-                onClick={() => setShowPostModal(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors"
-              >
-                + Post a Job
-              </button>
-            )}
+            <div className="flex items-center gap-3">
+              <LanguageSwitcher />
+              {user && (
+                <button
+                  onClick={() => setShowPostModal(true)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors"
+                >
+                  {t('jobs.post_button')}
+                </button>
+              )}
+            </div>
           </div>
 
           {!user && !loading && (
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6 text-sm text-blue-800 dark:text-blue-300">
-              <p className="mb-3">Sign in to post jobs or place bids on listings.</p>
+              <p className="mb-3">{t('auth.sign_in_prompt')}</p>
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => app.auth.signIn('google')}
                   className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors"
                 >
-                  Sign in with Google
+                  {t('auth.sign_in_google')}
                 </button>
                 <button
                   onClick={() => app.auth.signIn()}
                   className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors"
                 >
-                  Sign in with GitHub
+                  {t('auth.sign_in_github')}
                 </button>
               </div>
             </div>
@@ -276,7 +282,7 @@ export function CleanMarket() {
           {/* No-match message when search yields nothing but jobs exist */}
           {!jobsLoading && filteredJobs.length === 0 && jobs.length > 0 ? (
             <div className="text-center py-16 text-gray-400 dark:text-gray-500">
-              <p className="text-lg font-medium">No jobs match your search.</p>
+              <p className="text-lg font-medium">{t('jobs.no_match')}</p>
             </div>
           ) : (
             <JobList

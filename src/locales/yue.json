@@ -1,0 +1,28 @@
+{
+  "language_switcher": {
+    "label": "語言"
+  },
+  "header": {
+    "title": "CleanMarket",
+    "subtitle": "搵清潔工作或者發布需要完成嘅工作"
+  },
+  "nav": {
+    "browse_jobs": "瀏覽工作",
+    "my_jobs": "我嘅工作"
+  },
+  "auth": {
+    "sign_in_prompt": "登入嚟發布工作或者對列表出價。",
+    "sign_in_google": "用 Google 登入",
+    "sign_in_github": "用 GitHub 登入"
+  },
+  "jobs": {
+    "post_button": "+ 發布工作",
+    "no_match": "冇符合你搜索條件嘅工作。",
+    "loading": "正在載入 CleanMarket…"
+  },
+  "errors": {
+    "db_failed_title": "資料庫初始化失敗",
+    "db_failed_body": "設置應用程式時出現問題。請重新整理頁面再試。",
+    "refresh": "重新整理"
+  }
+}

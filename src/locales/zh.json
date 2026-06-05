@@ -1,0 +1,28 @@
+{
+  "language_switcher": {
+    "label": "语言"
+  },
+  "header": {
+    "title": "CleanMarket",
+    "subtitle": "寻找清洁工作或发布需要完成的工作"
+  },
+  "nav": {
+    "browse_jobs": "浏览工作",
+    "my_jobs": "我的工作"
+  },
+  "auth": {
+    "sign_in_prompt": "登录以发布工作或对列表出价。",
+    "sign_in_google": "使用 Google 登录",
+    "sign_in_github": "使用 GitHub 登录"
+  },
+  "jobs": {
+    "post_button": "+ 发布工作",
+    "no_match": "没有符合您搜索条件的工作。",
+    "loading": "正在加载 CleanMarket…"
+  },
+  "errors": {
+    "db_failed_title": "数据库初始化失败",
+    "db_failed_body": "应用程序设置出现问题。请刷新页面重试。",
+    "refresh": "刷新"
+  }
+}

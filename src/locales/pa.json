@@ -1,0 +1,28 @@
+{
+  "language_switcher": {
+    "label": "ਭਾਸ਼ਾ"
+  },
+  "header": {
+    "title": "CleanMarket",
+    "subtitle": "ਸਫ਼ਾਈ ਨੌਕਰੀਆਂ ਲੱਭੋ ਜਾਂ ਕੰਮ ਪੋਸਟ ਕਰੋ"
+  },
+  "nav": {
+    "browse_jobs": "ਨੌਕਰੀਆਂ ਦੇਖੋ",
+    "my_jobs": "ਮੇਰੀਆਂ ਨੌਕਰੀਆਂ"
+  },
+  "auth": {
+    "sign_in_prompt": "ਨੌਕਰੀਆਂ ਪੋਸਟ ਕਰਨ ਜਾਂ ਬੋਲੀਆਂ ਲਗਾਉਣ ਲਈ ਸਾਈਨ ਇਨ ਕਰੋ।",
+    "sign_in_google": "Google ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ",
+    "sign_in_github": "GitHub ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ"
+  },
+  "jobs": {
+    "post_button": "+ ਨੌਕਰੀ ਪੋਸਟ ਕਰੋ",
+    "no_match": "ਤੁਹਾਡੀ ਖੋਜ ਨਾਲ ਕੋਈ ਨੌਕਰੀ ਮੇਲ ਨਹੀਂ ਖਾਂਦੀ।",
+    "loading": "CleanMarket ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ…"
+  },
+  "errors": {
+    "db_failed_title": "ਡੇਟਾਬੇਸ ਸ਼ੁਰੂ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
+    "db_failed_body": "ਐਪ ਸੈੱਟਅੱਪ ਕਰਨ ਵਿੱਚ ਸਮੱਸਿਆ ਆਈ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰਨ ਲਈ ਪੰਨਾ ਤਾਜ਼ਾ ਕਰੋ।",
+    "refresh": "ਤਾਜ਼ਾ ਕਰੋ"
+  }
+}

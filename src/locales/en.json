@@ -1,0 +1,28 @@
+{
+  "language_switcher": {
+    "label": "Language"
+  },
+  "header": {
+    "title": "CleanMarket",
+    "subtitle": "Find cleaning jobs or post work that needs doing"
+  },
+  "nav": {
+    "browse_jobs": "Browse Jobs",
+    "my_jobs": "My Jobs"
+  },
+  "auth": {
+    "sign_in_prompt": "Sign in to post jobs or place bids on listings.",
+    "sign_in_google": "Sign in with Google",
+    "sign_in_github": "Sign in with GitHub"
+  },
+  "jobs": {
+    "post_button": "+ Post a Job",
+    "no_match": "No jobs match your search.",
+    "loading": "Loading CleanMarket…"
+  },
+  "errors": {
+    "db_failed_title": "Failed to initialise database",
+    "db_failed_body": "There was a problem setting up the app. Please refresh the page to try again.",
+    "refresh": "Refresh"
+  }
+}

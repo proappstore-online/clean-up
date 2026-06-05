@@ -1,0 +1,28 @@
+{
+  "language_switcher": {
+    "label": "Ngôn ngữ"
+  },
+  "header": {
+    "title": "CleanMarket",
+    "subtitle": "Tìm việc làm dọn dẹp hoặc đăng công việc cần thực hiện"
+  },
+  "nav": {
+    "browse_jobs": "Duyệt Công Việc",
+    "my_jobs": "Việc Của Tôi"
+  },
+  "auth": {
+    "sign_in_prompt": "Đăng nhập để đăng công việc hoặc đặt giá thầu.",
+    "sign_in_google": "Đăng nhập bằng Google",
+    "sign_in_github": "Đăng nhập bằng GitHub"
+  },
+  "jobs": {
+    "post_button": "+ Đăng Việc",
+    "no_match": "Không có công việc nào phù hợp với tìm kiếm của bạn.",
+    "loading": "Đang tải CleanMarket…"
+  },
+  "errors": {
+    "db_failed_title": "Không thể khởi tạo cơ sở dữ liệu",
+    "db_failed_body": "Đã xảy ra sự cố khi thiết lập ứng dụng. Vui lòng làm mới trang để thử lại.",
+    "refresh": "Làm mới"
+  }
+}
