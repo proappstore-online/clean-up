@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { BadgeDollarSign, CheckCircle2, Lock, MapPin, Trophy } from 'lucide-react'
 import type { User } from '@proappstore/sdk'
 import { app } from '../lib/app'
 import { generateId, formatDate, formatCurrency } from '../lib/utils'
@@ -215,18 +216,22 @@ export function JobDetail({ job: initialJob, currentUser, onBack, onJobUpdated }
                     aria-label="Awarded"
                     className="inline-flex items-center gap-1 text-xs font-semibold bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300 px-2.5 py-0.5 rounded-full border border-yellow-200 dark:border-yellow-700"
                   >
-                    🏆 Awarded
+                    <Trophy size={14} className="text-yellow-500" /> Awarded
                   </span>
                 )}
               </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">📍 {job.location}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 inline-flex items-center gap-1">
+                <MapPin size={16} className="text-gray-500 flex-shrink-0" />
+                {job.location}
+              </p>
               <p className="text-xs text-gray-400 mt-1">
                 Posted by <span className="font-medium">{job.poster_name}</span> · {formatDate(job.created_at)}
               </p>
               {/* Winner summary for everyone */}
               {isAccepted && winningBid && (
                 <div className="mt-2 inline-flex items-center gap-1.5 text-xs bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800 px-3 py-1.5 rounded-lg">
-                  <span>✅ Won by</span>
+                  <CheckCircle2 size={16} className="text-green-500" />
+                  <span>Won by</span>
                   <span className="font-semibold">{winningBid.bidder_name}</span>
                   <span>·</span>
                   <span className="font-semibold">{formatCurrency(winningBid.amount)}</span>
@@ -275,10 +280,14 @@ export function JobDetail({ job: initialJob, currentUser, onBack, onJobUpdated }
             </button>
           )}
           {isAccepted && (
-            <span className="text-sm font-medium text-yellow-600 dark:text-yellow-400">🏆 Job Awarded</span>
+            <span className="inline-flex items-center gap-1 text-sm font-medium text-yellow-600 dark:text-yellow-400">
+              <Trophy size={16} className="text-yellow-500" /> Job Awarded
+            </span>
           )}
           {hasAlreadyBid && !isAccepted && (
-            <span className="text-sm text-green-600 dark:text-green-400 font-medium">✓ You've bid on this job</span>
+            <span className="inline-flex items-center gap-1 text-sm text-green-600 dark:text-green-400 font-medium">
+              <CheckCircle2 size={16} className="text-green-500" /> You&apos;ve bid on this job
+            </span>
           )}
           {!currentUser && (
             <span className="text-sm text-gray-400">Sign in to place a bid</span>
@@ -384,19 +393,25 @@ export function JobDetail({ job: initialJob, currentUser, onBack, onJobUpdated }
           !currentUser ? (
             // AC-4: anonymous
             <div className="text-center py-10 text-gray-400">
-              <p className="text-3xl mb-2">🔒</p>
+              <div className="flex justify-center mb-2">
+                <Lock size={48} className="text-gray-400" />
+              </div>
               <p className="text-sm">Sign in to view bid information.</p>
             </div>
           ) : isPoster ? (
             // AC-1: poster but genuinely no bids yet
             <div className="text-center py-10 text-gray-400">
-              <p className="text-3xl mb-2">💰</p>
+              <div className="flex justify-center mb-2">
+                <BadgeDollarSign size={48} className="text-gray-400" />
+              </div>
               <p className="text-sm">No bids yet — be the first!</p>
             </div>
           ) : (
             // AC-3: authenticated non-bidder
             <div className="text-center py-10 text-gray-400">
-              <p className="text-3xl mb-2">🔒</p>
+              <div className="flex justify-center mb-2">
+                <Lock size={48} className="text-gray-400" />
+              </div>
               <p className="text-sm">Bids are only visible to the job poster.</p>
             </div>
           )
@@ -452,9 +467,9 @@ function BidCard({
             {isWinner && (
               <span
                 aria-label="Winner"
-                className="text-xs bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300 px-2 py-0.5 rounded-full border border-yellow-200 dark:border-yellow-700 font-semibold"
+                className="inline-flex items-center gap-1 text-xs bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300 px-2 py-0.5 rounded-full border border-yellow-200 dark:border-yellow-700 font-semibold"
               >
-                🏆 Winner
+                <Trophy size={14} className="text-yellow-500" /> Winner
               </span>
             )}
           </div>

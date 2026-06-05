@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { CheckCircle2 } from 'lucide-react'
 import type { initPro } from '@proappstore/sdk'
 
 // ── Row types for typed DB queries ──────────────────────────────────────────
@@ -149,8 +150,8 @@ function BidJobs({ bids }: { bids: BidWithJob[] }) {
             <div className="flex flex-col items-end gap-1">
               <StatusBadge status={bid.job_status} />
               {bid.accepted === 1 && (
-                <span className="inline-block text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
-                  ✓ Accepted
+                <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
+                  <CheckCircle2 size={14} className="text-green-600" /> Accepted
                 </span>
               )}
             </div>

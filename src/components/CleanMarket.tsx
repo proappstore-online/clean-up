@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { AlertTriangle, Sparkles } from 'lucide-react'
 import { useProAuth } from '@proappstore/sdk/hooks'
 import { app } from '../lib/app'
 import { runMigrations } from '../lib/db'
@@ -174,7 +175,9 @@ export function CleanMarket() {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center max-w-sm">
-          <p className="text-3xl mb-3">⚠️</p>
+          <div className="flex justify-center mb-3">
+            <AlertTriangle size={48} className="text-red-500" />
+          </div>
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Failed to initialise database</h2>
           <p className="text-sm text-gray-500 mb-4">There was a problem setting up the app. Please refresh the page to try again.</p>
           <button
@@ -223,7 +226,10 @@ export function CleanMarket() {
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">🧹 CleanMarket</h1>
+              <h1 className="flex items-center gap-2 text-2xl font-bold text-gray-900 dark:text-white">
+                <Sparkles size={28} className="text-blue-500" />
+                CleanMarket
+              </h1>
               <p className="text-sm text-gray-500 mt-1">Find cleaning jobs or post work that needs doing</p>
             </div>
             {user && (
