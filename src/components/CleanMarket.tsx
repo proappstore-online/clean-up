@@ -6,13 +6,17 @@ import { JobList } from './JobList'
 import { JobSearchBar } from './JobSearchBar'
 import { PostJobModal } from './PostJobModal'
 import { JobDetail } from './JobDetail'
+import { MyJobsView } from './MyJobsView'
 import type { Job } from '../lib/types'
+
+type View = 'list' | 'detail' | 'mine'
 
 export function CleanMarket() {
   const { user, loading } = useProAuth(app)
   const [ready, setReady] = useState(false)
   const [migrationError, setMigrationError] = useState(false)
-  const [view, setView] = useState<'list' | 'detail'>('list')
+  const [view, setView] = useState<View>('list')
+  const [returnView, setReturnView] = useState<'list' | 'mine'>('list')
   const [selectedJob, setSelectedJob] = useState<Job | null>(null)
   const [showPostModal, setShowPostModal] = useState(false)
   const [jobs, setJobs] = useState<Job[]>([])
@@ -24,6 +28,13 @@ export function CleanMarket() {
   const [keyword, setKeyword] = useState('')
   const [statusFilter, setStatusFilter] = useState('open')
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // When user signs out while on 'mine', fall back to 'list'
+  useEffect(() => {
+    if (!user && view === 'mine') {
+      setView('list')
+    }
+  }, [user, view])
 
   // Debounce: update keyword 300ms after the user stops typing
   useEffect(() => {
@@ -132,12 +143,13 @@ export function CleanMarket() {
   }
 
   function handleSelectJob(job: Job) {
+    setReturnView(view === 'mine' ? 'mine' : 'list')
     setSelectedJob(job)
     setView('detail')
   }
 
   function handleBack() {
-    setView('list')
+    setView(returnView)
     setSelectedJob(null)
     setRefreshKey((k) => k + 1)
   }
@@ -178,6 +190,34 @@ export function CleanMarket() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-6 dark:bg-gray-900 min-h-screen">
+      {/* ── Tab bar (visible on list/mine views) ── */}
+      {view !== 'detail' && (
+        <div className="flex gap-1 mb-6 border-b border-gray-200 dark:border-gray-700">
+          <button
+            onClick={() => setView('list')}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+              view === 'list'
+                ? 'border-blue-600 text-blue-600 dark:text-blue-400'
+                : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+            }`}
+          >
+            Browse Jobs
+          </button>
+          {user && (
+            <button
+              onClick={() => setView('mine')}
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                view === 'mine'
+                  ? 'border-blue-600 text-blue-600 dark:text-blue-400'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+              }`}
+            >
+              My Jobs
+            </button>
+          )}
+        </div>
+      )}
+
       {view === 'list' && (
         <>
           {/* Header */}
@@ -240,6 +280,10 @@ export function CleanMarket() {
             />
           )}
         </>
+      )}
+
+      {view === 'mine' && user && (
+        <MyJobsView app={app} user={user} />
       )}
 
       {view === 'detail' && selectedJob && (
