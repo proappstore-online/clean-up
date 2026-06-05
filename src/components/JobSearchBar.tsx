@@ -1,5 +1,6 @@
 interface Props {
   keyword: string
+  onKeywordChange: (v: string) => void
   statusFilter: string
   onStatusFilterChange: (v: string) => void
   onClear: () => void
