@@ -89,15 +89,16 @@ export function CleanMarket() {
         lat: number | null
         lng: number | null
         status: string
+        winner_bid_id: string | null
         created_at: string
         bid_count: number
       }>(
         `SELECT j.id, j.poster_id, j.poster_name, j.title,
-                j.description, j.location, j.lat, j.lng, j.status, j.created_at,
+                j.description, j.location, j.lat, j.lng, j.status,
+                j.winner_bid_id, j.created_at,
                 COUNT(b.id) as bid_count
          FROM jobs j
          LEFT JOIN bids b ON b.job_id = j.id
-         WHERE j.status = 'open'
          GROUP BY j.id
          ORDER BY j.created_at DESC`,
       )
@@ -110,7 +111,8 @@ export function CleanMarket() {
           )
           return {
             ...row,
-            status: row.status as 'open' | 'closed',
+            status: row.status as 'open' | 'closed' | 'accepted',
+            winner_bid_id: row.winner_bid_id ?? null,
             photos: photos.map((p) => app.storage.publicUrl(p.path)),
             bid_count: row.bid_count,
           }
@@ -138,6 +140,11 @@ export function CleanMarket() {
     setView('list')
     setSelectedJob(null)
     setRefreshKey((k) => k + 1)
+  }
+
+  function handleJobUpdated(updated: Job) {
+    setSelectedJob(updated)
+    setJobs((prev) => prev.map((j) => (j.id === updated.id ? updated : j)))
   }
 
   if (!ready) {
@@ -226,6 +233,7 @@ export function CleanMarket() {
           job={selectedJob}
           currentUser={user ?? null}
           onBack={handleBack}
+          onJobUpdated={handleJobUpdated}
         />
       )}
 

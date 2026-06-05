@@ -8,21 +8,25 @@ interface Props {
   job: Job
   currentUser: User | null
   onBack: () => void
+  onJobUpdated?: (updated: Job) => void
 }
 
-export function JobDetail({ job, currentUser, onBack }: Props) {
+export function JobDetail({ job: initialJob, currentUser, onBack, onJobUpdated }: Props) {
+  const [job, setJob] = useState<Job>(initialJob)
   const [bids, setBids] = useState<Bid[]>([])
   const [bidsLoading, setBidsLoading] = useState(true)
   const [showBidForm, setShowBidForm] = useState(false)
   const [amount, setAmount] = useState('')
   const [message, setMessage] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [accepting, setAccepting] = useState<string | null>(null) // bid id being accepted
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [mapUrl, setMapUrl] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
 
   const isOwner = currentUser?.id === job.poster_id
+  const isAccepted = job.status === 'accepted'
   const hasAlreadyBid = bids.some((b) => b.bidder_id === currentUser?.id)
   const canBid = !!currentUser && !isOwner && !hasAlreadyBid && job.status === 'open'
 
@@ -41,11 +45,53 @@ export function JobDetail({ job, currentUser, onBack }: Props) {
         `SELECT * FROM bids WHERE job_id = ? ORDER BY created_at DESC`,
         [job.id],
       )
-      setBids(rows)
+      // Ensure the accepted field defaults to 0 for older rows that predate the migration
+      setBids(rows.map((b) => ({ ...b, accepted: b.accepted ?? 0 })))
     } catch (err) {
       console.error('Failed to load bids', err)
     } finally {
       setBidsLoading(false)
+    }
+  }
+
+  async function handleAcceptBid(bid: Bid) {
+    if (!window.confirm(`Award this job to ${bid.bidder_name} for ${formatCurrency(bid.amount)}?`)) return
+    setAccepting(bid.id)
+    setError('')
+    try {
+      // Atomic: update job + mark bid in one batch
+      await app.db.batch([
+        {
+          sql: `UPDATE jobs SET status = 'accepted', winner_bid_id = ? WHERE id = ?`,
+          params: [bid.id, job.id],
+        },
+        {
+          sql: `UPDATE bids SET accepted = 1 WHERE id = ?`,
+          params: [bid.id],
+        },
+      ])
+
+      // Notify the winning bidder (best-effort)
+      try {
+        await app.notifications.notifyUser(bid.bidder_id, {
+          title: '🎉 You won the job!',
+          body: `Your bid of ${formatCurrency(bid.amount)} was accepted for "${job.title}"`,
+        })
+      } catch {
+        // non-fatal — bidder may not have push subscribed
+      }
+
+      // Update local state immediately
+      const updatedJob: Job = { ...job, status: 'accepted', winner_bid_id: bid.id }
+      setJob(updatedJob)
+      onJobUpdated?.(updatedJob)
+      setBids((prev) => prev.map((b) => ({ ...b, accepted: b.id === bid.id ? 1 : b.accepted })))
+      setSuccess(`Job awarded to ${bid.bidder_name}! They've been notified.`)
+    } catch (err) {
+      console.error('Failed to accept bid', err)
+      setError('Failed to accept bid. Please try again.')
+    } finally {
+      setAccepting(null)
     }
   }
 
@@ -117,6 +163,11 @@ export function JobDetail({ job, currentUser, onBack }: Props) {
     }
   }
 
+  // Find the winning bid (if any)
+  const winningBid = isAccepted && job.winner_bid_id
+    ? bids.find((b) => b.id === job.winner_bid_id)
+    : null
+
   return (
     <div className="dark:bg-gray-900 min-h-screen">
       <button
@@ -144,13 +195,32 @@ export function JobDetail({ job, currentUser, onBack }: Props) {
         <div className="p-5">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">{job.title}</h2>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{job.title}</h2>
+                {isAccepted && (
+                  <span
+                    aria-label="Awarded"
+                    className="inline-flex items-center gap-1 text-xs font-semibold bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300 px-2.5 py-0.5 rounded-full border border-yellow-200 dark:border-yellow-700"
+                  >
+                    🏆 Awarded
+                  </span>
+                )}
+              </div>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">📍 {job.location}</p>
               <p className="text-xs text-gray-400 mt-1">
                 Posted by <span className="font-medium">{job.poster_name}</span> · {formatDate(job.created_at)}
               </p>
+              {/* Winner summary for everyone */}
+              {isAccepted && winningBid && (
+                <div className="mt-2 inline-flex items-center gap-1.5 text-xs bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800 px-3 py-1.5 rounded-lg">
+                  <span>✅ Won by</span>
+                  <span className="font-semibold">{winningBid.bidder_name}</span>
+                  <span>·</span>
+                  <span className="font-semibold">{formatCurrency(winningBid.amount)}</span>
+                </div>
+              )}
             </div>
-            {isOwner && (
+            {isOwner && !isAccepted && (
               <button
                 onClick={() => void handleDeleteJob()}
                 disabled={deleting}
@@ -190,13 +260,16 @@ export function JobDetail({ job, currentUser, onBack }: Props) {
               Place a Bid
             </button>
           )}
-          {hasAlreadyBid && (
+          {isAccepted && (
+            <span className="text-sm font-medium text-yellow-600 dark:text-yellow-400">🏆 Job Awarded</span>
+          )}
+          {hasAlreadyBid && !isAccepted && (
             <span className="text-sm text-green-600 dark:text-green-400 font-medium">✓ You've bid on this job</span>
           )}
           {!currentUser && (
             <span className="text-sm text-gray-400">Sign in to place a bid</span>
           )}
-          {isOwner && (
+          {isOwner && !isAccepted && (
             <span className="text-sm text-gray-400">Your listing</span>
           )}
         </div>
@@ -207,8 +280,14 @@ export function JobDetail({ job, currentUser, onBack }: Props) {
           </div>
         )}
 
-        {/* Bid form */}
-        {showBidForm && canBid && (
+        {error && (
+          <div className="mb-3 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-700 dark:text-red-300">
+            {error}
+          </div>
+        )}
+
+        {/* Bid form — only when job is open */}
+        {showBidForm && canBid && job.status === 'open' && (
           <form
             onSubmit={(e) => void handleBidSubmit(e)}
             className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 mb-4"
@@ -253,9 +332,6 @@ export function JobDetail({ job, currentUser, onBack }: Props) {
               />
               <p className="text-xs text-gray-400 text-right mt-1">{message.length}/500</p>
             </div>
-            {error && (
-              <p className="text-sm text-red-600 bg-red-50 dark:bg-red-900/20 rounded p-2 mb-3">{error}</p>
-            )}
             <div className="flex gap-2">
               <button
                 type="button"
@@ -273,6 +349,13 @@ export function JobDetail({ job, currentUser, onBack }: Props) {
               </button>
             </div>
           </form>
+        )}
+
+        {/* Job closed / awarded notice for non-owners */}
+        {isAccepted && !isOwner && (
+          <div className="mb-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg text-sm text-yellow-700 dark:text-yellow-300">
+            This job has been awarded and is no longer accepting bids.
+          </div>
         )}
 
         {/* Bid list */}
@@ -294,6 +377,9 @@ export function JobDetail({ job, currentUser, onBack }: Props) {
                 key={bid.id}
                 bid={bid}
                 isCurrentUser={bid.bidder_id === currentUser?.id}
+                showAccept={isOwner && !isAccepted}
+                accepting={accepting === bid.id}
+                onAccept={() => void handleAcceptBid(bid)}
               />
             ))}
           </div>
@@ -306,18 +392,40 @@ export function JobDetail({ job, currentUser, onBack }: Props) {
 function BidCard({
   bid,
   isCurrentUser,
+  showAccept,
+  accepting,
+  onAccept,
 }: {
   bid: Bid
   isCurrentUser: boolean
+  showAccept: boolean
+  accepting: boolean
+  onAccept: () => void
 }) {
+  const isWinner = bid.accepted === 1
+
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
-      <div className="flex items-start justify-between">
+    <div
+      className={`bg-white dark:bg-gray-800 rounded-xl border p-4 transition-colors ${
+        isWinner
+          ? 'border-yellow-300 dark:border-yellow-600 bg-yellow-50/30 dark:bg-yellow-900/10'
+          : 'border-gray-200 dark:border-gray-700'
+      }`}
+    >
+      <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="font-semibold text-gray-900 dark:text-white">{bid.bidder_name}</span>
             {isCurrentUser && (
               <span className="text-xs bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 px-2 py-0.5 rounded-full">You</span>
+            )}
+            {isWinner && (
+              <span
+                aria-label="Winner"
+                className="text-xs bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300 px-2 py-0.5 rounded-full border border-yellow-200 dark:border-yellow-700 font-semibold"
+              >
+                🏆 Winner
+              </span>
             )}
           </div>
           <p className="text-xs text-gray-400 mt-0.5">{formatDate(bid.created_at)}</p>
@@ -325,8 +433,18 @@ function BidCard({
             <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 leading-relaxed">{bid.message}</p>
           )}
         </div>
-        <div className="text-right ml-4 flex-shrink-0">
+        <div className="flex flex-col items-end gap-2 ml-4 flex-shrink-0">
           <span className="text-lg font-bold text-green-600 dark:text-green-400">{formatCurrency(bid.amount)}</span>
+          {showAccept && (
+            <button
+              onClick={onAccept}
+              disabled={accepting}
+              aria-label={`Accept bid from ${bid.bidder_name}`}
+              className="text-xs font-semibold bg-yellow-500 hover:bg-yellow-600 disabled:opacity-50 text-white px-3 py-1.5 rounded-lg transition-colors"
+            >
+              {accepting ? 'Accepting…' : 'Accept'}
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -2,9 +2,9 @@
   "tools": [
     {
       "name": "list_jobs",
-      "description": "List jobs, optionally filtered by status (open/closed). Returns the most recent jobs first.",
+      "description": "List jobs, optionally filtered by status (open/closed/accepted). Returns the most recent jobs first.",
       "operation": "query",
-      "sql": "SELECT id, poster_id, poster_name, title, description, location, lat, lng, status, created_at FROM jobs WHERE (:status IS NULL OR status = :status) ORDER BY created_at DESC LIMIT :limit",
+      "sql": "SELECT id, poster_id, poster_name, title, description, location, lat, lng, status, winner_bid_id, created_at FROM jobs WHERE (:status IS NULL OR status = :status) ORDER BY created_at DESC LIMIT :limit",
       "params": {
         "status": { "type": "string", "optional": true },
         "limit": { "type": "integer", "default": 50, "max": 200, "optional": true }
@@ -15,7 +15,7 @@
       "name": "get_job",
       "description": "Get a single job by its ID.",
       "operation": "query",
-      "sql": "SELECT id, poster_id, poster_name, title, description, location, lat, lng, status, created_at FROM jobs WHERE id = :id",
+      "sql": "SELECT id, poster_id, poster_name, title, description, location, lat, lng, status, winner_bid_id, created_at FROM jobs WHERE id = :id",
       "params": {
         "id": { "type": "string" }
       },
@@ -49,10 +49,21 @@
       "requires_auth": true
     },
     {
+      "name": "accept_bid",
+      "description": "Award a job to the winning bidder. Sets job status to accepted and records the winning bid ID. Only the job poster can do this.",
+      "operation": "execute",
+      "sql": "UPDATE jobs SET status = 'accepted', winner_bid_id = :bid_id WHERE id = :job_id AND poster_id = :__user_id",
+      "params": {
+        "job_id": { "type": "string" },
+        "bid_id": { "type": "string" }
+      },
+      "requires_auth": true
+    },
+    {
       "name": "list_bids",
-      "description": "List all bids for a given job.",
+      "description": "List all bids for a given job, including accepted flag.",
       "operation": "query",
-      "sql": "SELECT id, job_id, bidder_id, bidder_name, amount, message, created_at FROM bids WHERE job_id = :job_id ORDER BY amount ASC",
+      "sql": "SELECT id, job_id, bidder_id, bidder_name, amount, message, accepted, created_at FROM bids WHERE job_id = :job_id ORDER BY amount ASC",
       "params": {
         "job_id": { "type": "string" }
       },
@@ -76,7 +87,7 @@
       "name": "list_my_jobs",
       "description": "List all jobs posted by the authenticated user.",
       "operation": "query",
-      "sql": "SELECT id, poster_name, title, description, location, status, created_at FROM jobs WHERE poster_id = :__user_id ORDER BY created_at DESC LIMIT :limit",
+      "sql": "SELECT id, poster_name, title, description, location, status, winner_bid_id, created_at FROM jobs WHERE poster_id = :__user_id ORDER BY created_at DESC LIMIT :limit",
       "params": {
         "limit": { "type": "integer", "default": 50, "max": 200, "optional": true }
       },
@@ -86,7 +97,7 @@
       "name": "list_my_bids",
       "description": "List all bids submitted by the authenticated user.",
       "operation": "query",
-      "sql": "SELECT id, job_id, amount, message, created_at FROM bids WHERE bidder_id = :__user_id ORDER BY created_at DESC LIMIT :limit",
+      "sql": "SELECT id, job_id, amount, message, accepted, created_at FROM bids WHERE bidder_id = :__user_id ORDER BY created_at DESC LIMIT :limit",
       "params": {
         "limit": { "type": "integer", "default": 50, "max": 200, "optional": true }
       },

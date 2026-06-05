@@ -8,6 +8,7 @@ interface Props {
 
 export function JobCard({ job, onClick }: Props) {
   const thumb = job.photos?.[0]
+  const isAwarded = job.status === 'accepted'
 
   return (
     <button
@@ -27,7 +28,17 @@ export function JobCard({ job, onClick }: Props) {
         </div>
       )}
       <div className="p-4">
-        <h3 className="font-semibold text-gray-900 dark:text-white truncate">{job.title}</h3>
+        <div className="flex items-center gap-2 flex-wrap">
+          <h3 className="font-semibold text-gray-900 dark:text-white truncate">{job.title}</h3>
+          {isAwarded && (
+            <span
+              aria-label="Awarded"
+              className="inline-flex items-center gap-1 text-xs font-semibold bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300 px-2 py-0.5 rounded-full border border-yellow-200 dark:border-yellow-700 flex-shrink-0"
+            >
+              🏆 Awarded
+            </span>
+          )}
+        </div>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate">📍 {job.location}</p>
         <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 line-clamp-2">{job.description}</p>
         <div className="flex items-center justify-between mt-3">

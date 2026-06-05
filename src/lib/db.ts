@@ -2,7 +2,6 @@ import { app } from './app'
 
 // NEVER edit or delete existing migrations.
 // Append new { name, sql } entries to add columns/tables.
-// Example: { name: '0004_winner_bid_id', sql: 'ALTER TABLE bids ADD COLUMN winner_bid_id TEXT' }
 const migrations = [
   {
     name: '0001_init',
@@ -40,6 +39,14 @@ const migrations = [
   job_id  TEXT NOT NULL,
   path    TEXT NOT NULL
 )`,
+  },
+  {
+    name: '0005_jobs_winner_bid_id',
+    sql: 'ALTER TABLE jobs ADD COLUMN winner_bid_id TEXT',
+  },
+  {
+    name: '0006_bids_accepted_flag',
+    sql: 'ALTER TABLE bids ADD COLUMN accepted INTEGER DEFAULT 0',
   },
 ]
 
