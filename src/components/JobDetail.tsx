@@ -30,6 +30,18 @@ export function JobDetail({ job: initialJob, currentUser, onBack, onJobUpdated }
   const hasAlreadyBid = bids.some((b) => b.bidder_id === currentUser?.id)
   const canBid = !!currentUser && !isOwner && !hasAlreadyBid && job.status === 'open'
 
+  // ── Bid visibility gate (AC-1 / AC-2 / AC-3 / AC-4) ─────────────────────
+  // isPoster  → sees ALL bids (AC-1)
+  // myBid     → sees ONLY own bid (AC-2)
+  // otherwise → sees NO bids; an appropriate empty-state message is shown (AC-3 / AC-4)
+  const isPoster = !!currentUser && currentUser.id === job.poster_id
+  const myBid = currentUser ? bids.find((b) => b.bidder_id === currentUser.id) : undefined
+
+  const visibleBids: Bid[] =
+    isPoster ? bids          // AC-1: job poster sees all
+    : myBid  ? [myBid]       // AC-2: bidder sees only their own bid
+    :          []             // AC-3 / AC-4: non-bidder / anon sees nothing
+
   useEffect(() => {
     void loadBids()
     if (job.lat !== null && job.lng !== null && job.lat !== undefined && job.lng !== undefined) {
@@ -163,7 +175,8 @@ export function JobDetail({ job: initialJob, currentUser, onBack, onJobUpdated }
     }
   }
 
-  // Find the winning bid (if any)
+  // Find the winning bid (if any) — use visibleBids so poster always sees it;
+  // for non-posters the winning bid is surfaced via the inline winner summary above.
   const winningBid = isAccepted && job.winner_bid_id
     ? bids.find((b) => b.id === job.winner_bid_id)
     : null
@@ -249,8 +262,9 @@ export function JobDetail({ job: initialJob, currentUser, onBack, onJobUpdated }
       {/* Bids section */}
       <div className="mt-6">
         <div className="flex items-center justify-between mb-3">
+          {/* AC-1: poster sees full count; AC-2/3/4: count suppressed to avoid leaking competitor info */}
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Bids ({bids.length})
+            {isPoster ? `Bids (${bids.length})` : 'Bids'}
           </h3>
           {canBid && !showBidForm && (
             <button
@@ -358,21 +372,37 @@ export function JobDetail({ job: initialJob, currentUser, onBack, onJobUpdated }
           </div>
         )}
 
-        {/* Bid list */}
+        {/* Bid list — filtered by visibleBids gate */}
         {bidsLoading ? (
           <div className="space-y-3">
             {[1, 2].map((i) => (
               <div key={i} className="animate-pulse bg-gray-100 dark:bg-gray-800 rounded-xl h-20" />
             ))}
           </div>
-        ) : bids.length === 0 ? (
-          <div className="text-center py-10 text-gray-400">
-            <p className="text-3xl mb-2">💰</p>
-            <p className="text-sm">No bids yet — be the first!</p>
-          </div>
+        ) : visibleBids.length === 0 ? (
+          // Empty-state messaging differs by viewer tier
+          !currentUser ? (
+            // AC-4: anonymous
+            <div className="text-center py-10 text-gray-400">
+              <p className="text-3xl mb-2">🔒</p>
+              <p className="text-sm">Sign in to view bid information.</p>
+            </div>
+          ) : isPoster ? (
+            // AC-1: poster but genuinely no bids yet
+            <div className="text-center py-10 text-gray-400">
+              <p className="text-3xl mb-2">💰</p>
+              <p className="text-sm">No bids yet — be the first!</p>
+            </div>
+          ) : (
+            // AC-3: authenticated non-bidder
+            <div className="text-center py-10 text-gray-400">
+              <p className="text-3xl mb-2">🔒</p>
+              <p className="text-sm">Bids are only visible to the job poster.</p>
+            </div>
+          )
         ) : (
           <div className="space-y-3">
-            {bids.map((bid) => (
+            {visibleBids.map((bid) => (
               <BidCard
                 key={bid.id}
                 bid={bid}

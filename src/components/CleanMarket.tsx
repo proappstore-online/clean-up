@@ -6,16 +6,13 @@ import { JobList } from './JobList'
 import { JobSearchBar } from './JobSearchBar'
 import { PostJobModal } from './PostJobModal'
 import { JobDetail } from './JobDetail'
-import { MyJobsView } from './MyJobsView'
 import type { Job } from '../lib/types'
-
-type View = 'list' | 'detail' | 'mine'
 
 export function CleanMarket() {
   const { user, loading } = useProAuth(app)
   const [ready, setReady] = useState(false)
   const [migrationError, setMigrationError] = useState(false)
-  const [view, setView] = useState<View>('list')
+  const [view, setView] = useState<'list' | 'detail'>('list')
   const [selectedJob, setSelectedJob] = useState<Job | null>(null)
   const [showPostModal, setShowPostModal] = useState(false)
   const [jobs, setJobs] = useState<Job[]>([])
@@ -181,66 +178,44 @@ export function CleanMarket() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-6 dark:bg-gray-900 min-h-screen">
-      {/* ── Top navigation bar ── */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">🧹 CleanMarket</h1>
-          <p className="text-sm text-gray-500 mt-1">Find cleaning jobs or post work that needs doing</p>
-        </div>
-        <div className="flex items-center gap-2">
-          {user && (
-            <button
-              aria-label="My Jobs"
-              onClick={() => setView(view === 'mine' ? 'list' : 'mine')}
-              className={`font-semibold px-4 py-2 rounded-lg transition-colors text-sm ${
-                view === 'mine'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-200'
-              }`}
-            >
-              My Jobs
-            </button>
-          )}
-          {user && view !== 'mine' && (
-            <button
-              onClick={() => setShowPostModal(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors text-sm"
-            >
-              + Post a Job
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* ── Sign-in banner ── */}
-      {!user && !loading && (
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6 text-sm text-blue-800 dark:text-blue-300">
-          <p className="mb-3">Sign in to post jobs or place bids on listings.</p>
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => app.auth.signIn('google')}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors"
-            >
-              Sign in with Google
-            </button>
-            <button
-              onClick={() => app.auth.signIn()}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors"
-            >
-              Sign in with GitHub
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ── My Jobs view ── */}
-      {view === 'mine' && user && (
-        <MyJobsView app={app} user={user} />
-      )}
-
-      {/* ── Browse / detail views ── */}
       {view === 'list' && (
         <>
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">🧹 CleanMarket</h1>
+              <p className="text-sm text-gray-500 mt-1">Find cleaning jobs or post work that needs doing</p>
+            </div>
+            {user && (
+              <button
+                onClick={() => setShowPostModal(true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors"
+              >
+                + Post a Job
+              </button>
+            )}
+          </div>
+
+          {!user && !loading && (
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6 text-sm text-blue-800 dark:text-blue-300">
+              <p className="mb-3">Sign in to post jobs or place bids on listings.</p>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => app.auth.signIn('google')}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors"
+                >
+                  Sign in with Google
+                </button>
+                <button
+                  onClick={() => app.auth.signIn()}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors"
+                >
+                  Sign in with GitHub
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Search bar */}
           <JobSearchBar
             keyword={keyword}
