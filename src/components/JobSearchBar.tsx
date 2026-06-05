@@ -1,8 +1,5 @@
-import { useRef } from 'react'
-
 interface Props {
   keyword: string
-  onKeywordChange: (v: string) => void
   statusFilter: string
   onStatusFilterChange: (v: string) => void
   onClear: () => void
@@ -12,7 +9,6 @@ interface Props {
 
 export function JobSearchBar({
   keyword,
-  onKeywordChange,
   statusFilter,
   onStatusFilterChange,
   onClear,

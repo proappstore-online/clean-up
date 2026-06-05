@@ -196,30 +196,15 @@ export function CleanMarket() {
             )}
           </div>
 
-          {!user && !loading && (
+          {!user && (
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6 text-sm text-blue-800 dark:text-blue-300">
-              <p className="mb-3">Sign in to post jobs or place bids on listings.</p>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={() => app.auth.signIn('google')}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors"
-                >
-                  Sign in with Google
-                </button>
-                <button
-                  onClick={() => app.auth.signIn()}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors"
-                >
-                  Sign in with GitHub
-                </button>
-              </div>
+              Sign in to post jobs or place bids on listings.
             </div>
           )}
 
           {/* Search bar */}
           <JobSearchBar
             keyword={keyword}
-            onKeywordChange={setKeyword}
             statusFilter={statusFilter}
             onStatusFilterChange={setStatusFilter}
             onClear={handleClear}
