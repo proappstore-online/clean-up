@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import type { User } from '@proappstore/sdk'
 import { app } from '../lib/app'
 import { generateId } from '../lib/utils'
+import { LocationAutocomplete } from './LocationAutocomplete'
 
 interface Props {
   user: User
@@ -16,6 +17,8 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [location, setLocation] = useState('')
+  const [locationLat, setLocationLat] = useState<number | null>(null)
+  const [locationLng, setLocationLng] = useState<number | null>(null)
   const [photos, setPhotos] = useState<File[]>([])
   const [previewUrls, setPreviewUrls] = useState<string[]>([])
   const [submitting, setSubmitting] = useState(false)
@@ -47,6 +50,15 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
     setPhotos((prev) => prev.filter((_, i) => i !== idx))
   }
 
+  function handleLocationChange(value: string) {
+    setLocation(value)
+  }
+
+  function handleLocationSelect(lat: number | null, lng: number | null) {
+    setLocationLat(lat)
+    setLocationLng(lng)
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
@@ -59,18 +71,9 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
       const jobId = generateId()
       const now = new Date().toISOString()
 
-      // Geocode location (best-effort)
-      let lat: number | null = null
-      let lng: number | null = null
-      try {
-        const results = await app.maps.geocode(location.trim())
-        if (results && results.length > 0) {
-          lat = results[0].lat
-          lng = results[0].lng
-        }
-      } catch {
-        // geocode failure is non-fatal
-      }
+      // lat/lng captured at selection time — no geocode call here
+      const lat = locationLat
+      const lng = locationLng
 
       // Upload photos
       const photoPaths: string[] = []
@@ -178,12 +181,11 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
             >
               Location <span className="text-red-500">*</span>
             </label>
-            <input
+            <LocationAutocomplete
               id="job-location"
-              type="text"
-              maxLength={120}
               value={location}
-              onChange={(e) => setLocation(e.target.value)}
+              onChange={handleLocationChange}
+              onSelect={handleLocationSelect}
               placeholder="e.g. 123 Main St, Brooklyn, NY"
               className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
             />
