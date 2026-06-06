@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import type { User } from '@proappstore/sdk'
 import { app } from '../lib/app'
 import { generateId, formatDate, formatCurrency } from '../lib/utils'
-import { JobPhotoManager } from './JobPhotoManager'
 import type { Job, Bid } from '../lib/types'
 
 interface Props {
@@ -35,7 +34,6 @@ export function JobDetail({ job: initialJob, currentUser, onBack, onJobUpdated }
   const canBid = !!currentUser && !isOwner && !hasAlreadyBid && job.status === 'open'
 
   const isPoster = !!currentUser && currentUser.id === job.poster_id
-  const canManagePhotos = isPoster && job.status === 'open'
   const myBid = currentUser ? bids.find((b) => b.bidder_id === currentUser.id) : undefined
 
   const visibleBids: Bid[] =
@@ -185,21 +183,17 @@ export function JobDetail({ job: initialJob, currentUser, onBack, onJobUpdated }
       </button>
 
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-        {canManagePhotos ? (
-          <JobPhotoManager jobId={job.id} />
-        ) : (
-          job.photos && job.photos.length > 0 && (
-            <div className="flex gap-2 overflow-x-auto p-4 pb-0">
-              {job.photos.map((url, i) => (
-                <img
-                  key={i}
-                  src={url}
-                  alt={t('detail.photo_alt', { index: i + 1 })}
-                  className="h-52 w-auto rounded-xl object-cover flex-shrink-0 border border-gray-200 dark:border-gray-700"
-                />
-              ))}
-            </div>
-          )
+        {job.photos && job.photos.length > 0 && (
+          <div className="flex gap-2 overflow-x-auto p-4 pb-0">
+            {job.photos.map((url, i) => (
+              <img
+                key={i}
+                src={url}
+                alt={t('detail.photo_alt', { index: i + 1 })}
+                className="h-52 w-auto rounded-xl object-cover flex-shrink-0 border border-gray-200 dark:border-gray-700"
+              />
+            ))}
+          </div>
         )}
 
         <div className="p-5">
@@ -302,77 +296,116 @@ export function JobDetail({ job: initialJob, currentUser, onBack, onJobUpdated }
         )}
 
         {showBidForm && canBid && job.status === 'open' && (
-          <BidForm
-            amount={amount}
-            message={message}
-            submitting={submitting}
-            onAmount={setAmount}
-            onMessage={setMessage}
-            onSubmit={handleBidSubmit}
-            onCancel={() => setShowBidForm(false)}
-            t={t}
-          />
+          <form
+            onSubmit={(e) => void handleBidSubmit(e)}
+            className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 mb-4"
+          >
+            <h4 className="font-semibold text-gray-900 dark:text-white mb-3">{t('detail.your_bid_heading')}</h4>
+            <div className="mb-3">
+              <label
+                htmlFor="bid-amount"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                {t('detail.bid_amount_label')} <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                <input
+                  id="bid-amount"
+                  type="number"
+                  min="1"
+                  step="1"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  placeholder="150"
+                  className="w-full pl-7 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 outline-none"
+                />
+              </div>
+            </div>
+            <div className="mb-3">
+              <label
+                htmlFor="bid-message"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                {t('detail.message_label')}
+              </label>
+              <textarea
+                id="bid-message"
+                rows={3}
+                maxLength={500}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder={t('detail.message_placeholder')}
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 outline-none resize-none"
+              />
+              <p className="text-xs text-gray-400 text-right mt-1">{message.length}/500</p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => { setShowBidForm(false); setError('') }}
+                className="flex-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
+                {t('detail.cancel')}
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="flex-1 bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white py-2 rounded-lg text-sm font-semibold transition-colors"
+              >
+                {submitting ? t('detail.submitting') : t('detail.submit_bid')}
+              </button>
+            </div>
+          </form>
         )}
 
-        {!currentUser && (
-          <div className="p-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2">
-            <Lock size={16} className="text-gray-400" />
-            {t('detail.sign_in_view')}
-          </div>
-        )}
-
-        {currentUser && isAccepted && !isPoster && (
-          <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl text-sm text-yellow-700 dark:text-yellow-300">
+        {isAccepted && !isOwner && (
+          <div className="mb-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg text-sm text-yellow-700 dark:text-yellow-300">
             {t('detail.awarded_notice')}
           </div>
         )}
 
-        {currentUser && (
-          <div className="space-y-2">
-            {bidsLoading ? (
-              <p className="text-sm text-gray-400">…</p>
-            ) : visibleBids.length === 0 ? (
-              <p className="text-sm text-gray-400">
-                {isPoster ? t('detail.no_bids_first') : t('detail.bids_poster_only')}
-              </p>
-            ) : (
-              visibleBids.map((bid) => (
-                <div
-                  key={bid.id}
-                  className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl flex items-start justify-between gap-3"
-                >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-semibold text-gray-900 dark:text-white">
-                        {bid.bidder_id === currentUser.id ? t('detail.you') : bid.bidder_name}
-                      </span>
-                      <span className="inline-flex items-center gap-1 text-sm font-bold text-green-600 dark:text-green-400">
-                        <BadgeDollarSign size={15} className="text-green-500" />
-                        {formatCurrency(bid.amount)}
-                      </span>
-                      {bid.accepted === 1 && (
-                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-yellow-600 dark:text-yellow-400">
-                          <Trophy size={13} className="text-yellow-500" /> {t('detail.winner')}
-                        </span>
-                      )}
-                    </div>
-                    {bid.message && (
-                      <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{bid.message}</p>
-                    )}
-                    <p className="text-xs text-gray-400 mt-1">{formatDate(bid.created_at)}</p>
-                  </div>
-                  {isPoster && !isAccepted && (
-                    <button
-                      onClick={() => void handleAcceptBid(bid)}
-                      disabled={accepting === bid.id}
-                      className="bg-green-600 hover:bg-green-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50 flex-shrink-0"
-                    >
-                      {accepting === bid.id ? t('detail.accepting') : t('detail.accept')}
-                    </button>
-                  )}
-                </div>
-              ))
-            )}
+        {bidsLoading ? (
+          <div className="space-y-3">
+            {[1, 2].map((i) => (
+              <div key={i} className="animate-pulse bg-gray-100 dark:bg-gray-800 rounded-xl h-20" />
+            ))}
+          </div>
+        ) : visibleBids.length === 0 ? (
+          !currentUser ? (
+            <div className="text-center py-10 text-gray-400">
+              <div className="flex justify-center mb-2">
+                <Lock size={48} className="text-gray-400" />
+              </div>
+              <p className="text-sm">{t('detail.sign_in_view')}</p>
+            </div>
+          ) : isPoster ? (
+            <div className="text-center py-10 text-gray-400">
+              <div className="flex justify-center mb-2">
+                <BadgeDollarSign size={48} className="text-gray-400" />
+              </div>
+              <p className="text-sm">{t('detail.no_bids_first')}</p>
+            </div>
+          ) : (
+            <div className="text-center py-10 text-gray-400">
+              <div className="flex justify-center mb-2">
+                <Lock size={48} className="text-gray-400" />
+              </div>
+              <p className="text-sm">{t('detail.bids_poster_only')}</p>
+            </div>
+          )
+        ) : (
+          <div className="space-y-3">
+            {visibleBids.map((bid) => (
+              <BidCard
+                key={bid.id}
+                bid={bid}
+                isCurrentUser={bid.bidder_id === currentUser?.id}
+                showAccept={isOwner && !isAccepted}
+                accepting={accepting === bid.id}
+                onAccept={() => void handleAcceptBid(bid)}
+              />
+            ))}
           </div>
         )}
       </div>
@@ -380,68 +413,65 @@ export function JobDetail({ job: initialJob, currentUser, onBack, onJobUpdated }
   )
 }
 
-interface BidFormProps {
-  amount: string
-  message: string
-  submitting: boolean
-  onAmount: (v: string) => void
-  onMessage: (v: string) => void
-  onSubmit: (e: React.FormEvent) => void | Promise<void>
-  onCancel: () => void
-  t: (key: string, opts?: Record<string, unknown>) => string
-}
+function BidCard({
+  bid,
+  isCurrentUser,
+  showAccept,
+  accepting,
+  onAccept,
+}: {
+  bid: Bid
+  isCurrentUser: boolean
+  showAccept: boolean
+  accepting: boolean
+  onAccept: () => void
+}) {
+  const { t } = useTranslation()
+  const isWinner = bid.accepted === 1
 
-function BidForm({ amount, message, submitting, onAmount, onMessage, onSubmit, onCancel, t }: BidFormProps) {
   return (
-    <form
-      onSubmit={(e) => void onSubmit(e)}
-      className="mb-4 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl space-y-3"
+    <div
+      className={`bg-white dark:bg-gray-800 rounded-xl border p-4 transition-colors ${
+        isWinner
+          ? 'border-yellow-300 dark:border-yellow-600 bg-yellow-50/30 dark:bg-yellow-900/10'
+          : 'border-gray-200 dark:border-gray-700'
+      }`}
     >
-      <h4 className="font-semibold text-gray-900 dark:text-white">{t('detail.your_bid_heading')}</h4>
-      <div>
-        <label htmlFor="bid-amount" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          {t('detail.bid_amount_label')}
-        </label>
-        <input
-          id="bid-amount"
-          type="number"
-          min="1"
-          step="1"
-          value={amount}
-          onChange={(e) => onAmount(e.target.value)}
-          className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 outline-none"
-        />
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-semibold text-gray-900 dark:text-white">{bid.bidder_name}</span>
+            {isCurrentUser && (
+              <span className="text-xs bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 px-2 py-0.5 rounded-full">{t('detail.you')}</span>
+            )}
+            {isWinner && (
+              <span
+                aria-label={t('detail.winner')}
+                className="inline-flex items-center gap-1 text-xs bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300 px-2 py-0.5 rounded-full border border-yellow-200 dark:border-yellow-700 font-semibold"
+              >
+                <Trophy size={14} className="text-yellow-500" /> {t('detail.winner')}
+              </span>
+            )}
+          </div>
+          <p className="text-xs text-gray-400 mt-0.5">{formatDate(bid.created_at)}</p>
+          {bid.message && (
+            <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 leading-relaxed">{bid.message}</p>
+          )}
+        </div>
+        <div className="flex flex-col items-end gap-2 ml-4 flex-shrink-0">
+          <span className="text-lg font-bold text-green-600 dark:text-green-400">{formatCurrency(bid.amount)}</span>
+          {showAccept && (
+            <button
+              onClick={onAccept}
+              disabled={accepting}
+              aria-label={t('detail.accept')}
+              className="text-xs font-semibold bg-yellow-500 hover:bg-yellow-600 disabled:opacity-50 text-white px-3 py-1.5 rounded-lg transition-colors"
+            >
+              {accepting ? t('detail.accepting') : t('detail.accept')}
+            </button>
+          )}
+        </div>
       </div>
-      <div>
-        <label htmlFor="bid-message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          {t('detail.message_label')}
-        </label>
-        <textarea
-          id="bid-message"
-          rows={3}
-          maxLength={500}
-          value={message}
-          onChange={(e) => onMessage(e.target.value)}
-          placeholder={t('detail.message_placeholder')}
-          className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 outline-none resize-none"
-        />
-      </div>
-      <div className="flex gap-2">
-        <button
-          type="submit"
-          disabled={submitting}
-          className="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
-        >
-          {submitting ? t('detail.submitting') : t('detail.submit_bid')}
-        </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-4 py-2"
-        >
-          {t('detail.cancel')}
-        </button>
-      </div>
-    </form>
+    </div>
   )
 }
