@@ -34,10 +34,6 @@ jobs:
           if [ -d web/dist ]; then echo "dir=web/dist" >> "$GITHUB_OUTPUT"
           elif [ -d dist ]; then echo "dir=dist" >> "$GITHUB_OUTPUT"
           else echo "::error::No build output"; exit 1; fi
-
-      # VCQA runs AFTER build, BEFORE deploy — adds the report to the deploy
-      # output so it ships with the app. continue-on-error: a scan failure
-      # never blocks the deploy. Typically ~15-30s.
       - name: Code-health scan
         continue-on-error: true
         run: |
@@ -47,7 +43,6 @@ jobs:
             cp .vibe-check/report.json "${{ steps.dist.outputs.dir }}/.vcqa/report.json"
             [ -f .vibe-check/badge.svg ] && cp .vibe-check/badge.svg "${{ steps.dist.outputs.dir }}/.vcqa/badge.svg" || true
           fi
-
       - name: Deploy to Cloudflare Pages
         run: npx wrangler@3 pages deploy "${{ steps.dist.outputs.dir }}" --project-name=proappstore-${{ github.event.repository.name }} --branch=main
         env:
