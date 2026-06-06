@@ -77,7 +77,10 @@
     "new_bid_title": "New bid on your job!",
     "new_bid_body": "{{name}} bid {{amount}} on \"{{title}}\"",
     "photo_alt": "Photo {{index}}",
-    "map_alt": "Job location map"
+    "map_alt": "Job location map",
+    "add_photo": "Add photo",
+    "remove_photo": "Remove photo {{index}}",
+    "photo_management_hint": "First photo is the cover image"
   },
   "post": {
     "heading": "Post a Cleaning Job",

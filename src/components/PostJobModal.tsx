@@ -1,72 +1,87 @@
-import { useRef, useState, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import type { User } from '@proappstore/sdk'
 import { app } from '../lib/app'
+import { generateId } from '../lib/utils'
 import { LocationAutocomplete } from './LocationAutocomplete'
 
-const MAX_PHOTOS = 10
-const MAX_FILE_SIZE = 50 * 1024 * 1024 // 50 MB
-const ALLOWED_TYPES = ['image/jpeg', 'image/png']
-
-interface User {
-  id: string
-  login: string
-  avatarUrl: string | null
-}
-
-interface PostJobModalProps {
+interface Props {
   user: User
   onClose: () => void
   onPosted: () => void
 }
 
-export function PostJobModal({ user, onClose, onPosted }: PostJobModalProps) {
-  const { t } = useTranslation()
-  const fileRef = useRef<HTMLInputElement>(null)
+const MAX_PHOTOS = 4
+const ALLOWED_TYPES = ['image/jpeg', 'image/png']
 
+export function PostJobModal({ user, onClose, onPosted }: Props) {
+  const { t } = useTranslation()
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [location, setLocation] = useState('')
-  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null)
+  const [locationLat, setLocationLat] = useState<number | null>(null)
+  const [locationLng, setLocationLng] = useState<number | null>(null)
   const [photos, setPhotos] = useState<File[]>([])
   const [previewUrls, setPreviewUrls] = useState<string[]>([])
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const fileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const urls = photos.map((f) => URL.createObjectURL(f))
     setPreviewUrls(urls)
-    return () => urls.forEach((u) => URL.revokeObjectURL(u))
+    return () => {
+      urls.forEach((u) => URL.revokeObjectURL(u))
+    }
   }, [photos])
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? [])
     const valid = files.filter(
-      (f) => ALLOWED_TYPES.includes(f.type) && f.size <= MAX_FILE_SIZE,
+      (f) => ALLOWED_TYPES.includes(f.type) && f.size <= 50 * 1024 * 1024,
     )
-    if (valid.length !== files.length) {
+    if (valid.length < files.length) {
       setError(t('post.invalid_image'))
-    } else {
-      setError('')
     }
     setPhotos((prev) => [...prev, ...valid].slice(0, MAX_PHOTOS))
     if (fileRef.current) fileRef.current.value = ''
   }
 
-  function removePhoto(index: number) {
-    setPhotos((prev) => prev.filter((_, i) => i !== index))
+  function removePhoto(idx: number) {
+    setPhotos((prev) => prev.filter((_, i) => i !== idx))
   }
 
-  async function handlePost(e: React.FormEvent) {
+  function handleLocationChange(value: string) {
+    setLocation(value)
+  }
+
+  function handleLocationSelect(lat: number | null, lng: number | null) {
+    setLocationLat(lat)
+    setLocationLng(lng)
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    setError('')
     if (!title.trim() || !description.trim() || !location.trim()) {
       setError(t('post.fill_required'))
       return
     }
     setSubmitting(true)
-    setError('')
     try {
-      const jobId = crypto.randomUUID()
+      const jobId = generateId()
       const now = new Date().toISOString()
+
+      const lat = locationLat
+      const lng = locationLng
+
+      const photoPaths: string[] = []
+      for (const file of photos) {
+        const ext = file.type === 'image/png' ? 'png' : 'jpg'
+        const path = `jobs/${jobId}/${generateId()}.${ext}`
+        await app.storage.uploadPublic(path, file, file.type)
+        photoPaths.push(path)
+      }
 
       await app.db.execute(
         `INSERT INTO jobs (id, poster_id, poster_email, poster_name, title, description, location, lat, lng, status, created_at)
@@ -74,47 +89,41 @@ export function PostJobModal({ user, onClose, onPosted }: PostJobModalProps) {
         [
           jobId,
           user.id,
+          '',
           user.login,
-          user.login,
-          title.trim(),
-          description.trim(),
-          location.trim(),
-          coords?.lat ?? null,
-          coords?.lng ?? null,
+          title.trim().slice(0, 80),
+          description.trim().slice(0, 1000),
+          location.trim().slice(0, 120),
+          lat,
+          lng,
           now,
         ],
       )
 
-      for (let i = 0; i < photos.length; i++) {
-        const file = photos[i]
-        const ext = file.type === 'image/png' ? 'png' : 'jpg'
-        const path = `jobs/${jobId}/${i}-${crypto.randomUUID()}.${ext}`
-        const buffer = await file.arrayBuffer()
-        await app.storage.upload(path, buffer, file.type)
-        await app.db.execute(
-          `INSERT INTO job_photos (id, job_id, path) VALUES (?, ?, ?)`,
-          [crypto.randomUUID(), jobId, path],
+      if (photoPaths.length > 0) {
+        await app.db.batch(
+          photoPaths.map((path) => ({
+            sql: `INSERT INTO job_photos (id, job_id, path) VALUES (?, ?, ?)`,
+            params: [generateId(), jobId, path],
+          }))
         )
       }
 
       onPosted()
     } catch (err) {
-      console.error('Failed to post job', err)
-      setError(t('post.fill_required'))
+      setError(t('detail.bid_failed'))
+      console.error(err)
     } finally {
       setSubmitting(false)
     }
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 p-0 sm:p-4">
-      <div className="bg-white dark:bg-gray-800 w-full sm:max-w-lg sm:rounded-2xl rounded-t-2xl max-h-[90vh] overflow-y-auto shadow-xl">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-800">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-            {t('post.heading')}
-          </h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-gray-900/80 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('post.heading')}</h2>
           <button
-            type="button"
             onClick={onClose}
             aria-label={t('post.close_modal')}
             className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-2xl leading-none"
@@ -123,45 +132,59 @@ export function PostJobModal({ user, onClose, onPosted }: PostJobModalProps) {
           </button>
         </div>
 
-        <form onSubmit={handlePost} className="px-5 py-4 space-y-4">
+        <form onSubmit={(e) => void handleSubmit(e)} className="p-5 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              {t('post.title_label')}
+            <label
+              htmlFor="job-title"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
+              {t('post.title_label')} <span className="text-red-500">*</span>
             </label>
             <input
+              id="job-title"
               type="text"
+              maxLength={80}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder={t('post.title_placeholder')}
               className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
             />
+            <p className="text-xs text-gray-400 mt-1 text-right">{title.length}/80</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              {t('post.description_label')}
+            <label
+              htmlFor="job-description"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
+              {t('post.description_label')} <span className="text-red-500">*</span>
             </label>
             <textarea
+              id="job-description"
+              rows={4}
+              maxLength={1000}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder={t('post.description_placeholder')}
-              rows={4}
               className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none resize-none"
             />
+            <p className="text-xs text-gray-400 mt-1 text-right">{description.length}/1000</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              {t('post.location_label')}
+            <label
+              htmlFor="job-location"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
+              {t('post.location_label')} <span className="text-red-500">*</span>
             </label>
             <LocationAutocomplete
+              id="job-location"
               value={location}
-              onChange={setLocation}
-              onSelect={(loc) => {
-                setLocation(loc.label)
-                setCoords({ lat: loc.lat, lng: loc.lng })
-              }}
+              onChange={handleLocationChange}
+              onSelect={handleLocationSelect}
               placeholder={t('post.location_placeholder')}
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
             />
           </div>
 
@@ -198,9 +221,6 @@ export function PostJobModal({ user, onClose, onPosted }: PostJobModalProps) {
                 </button>
               )}
             </div>
-            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-              {t('post.cover_hint')}
-            </p>
             <input
               ref={fileRef}
               type="file"
@@ -215,18 +235,18 @@ export function PostJobModal({ user, onClose, onPosted }: PostJobModalProps) {
             <p className="text-sm text-red-600 bg-red-50 dark:bg-red-900/20 rounded-lg p-3">{error}</p>
           )}
 
-          <div className="flex gap-2 pt-2">
+          <div className="flex gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+              className="flex-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-2.5 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             >
               {t('post.cancel')}
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white rounded-lg px-4 py-2 text-sm font-medium"
+              className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white py-2.5 rounded-lg font-semibold transition-colors"
             >
               {submitting ? t('post.posting') : t('post.post')}
             </button>
