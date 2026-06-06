@@ -1,4 +1,5 @@
 import { MapPin, Sparkles, Trophy } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { Job } from '../lib/types'
 import { formatDate } from '../lib/utils'
 
@@ -8,8 +9,10 @@ interface Props {
 }
 
 export function JobCard({ job, onClick }: Props) {
+  const { t } = useTranslation()
   const thumb = job.photos?.[0]
   const isAwarded = job.status === 'accepted'
+  const bidCount = job.bid_count ?? 0
 
   return (
     <button
@@ -33,10 +36,10 @@ export function JobCard({ job, onClick }: Props) {
           <h3 className="font-semibold text-gray-900 dark:text-white truncate">{job.title}</h3>
           {isAwarded && (
             <span
-              aria-label="Awarded"
+              aria-label={t('card.awarded')}
               className="inline-flex items-center gap-1 text-xs font-semibold bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300 px-2 py-0.5 rounded-full border border-yellow-200 dark:border-yellow-700 flex-shrink-0"
             >
-              <Trophy size={14} className="text-yellow-500" /> Awarded
+              <Trophy size={14} className="text-yellow-500" /> {t('card.awarded')}
             </span>
           )}
         </div>
@@ -48,7 +51,7 @@ export function JobCard({ job, onClick }: Props) {
         <div className="flex items-center justify-between mt-3">
           <span className="text-xs text-gray-400">{formatDate(job.created_at)}</span>
           <span className="text-xs font-medium bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-full">
-            {job.bid_count ?? 0} bid{job.bid_count !== 1 ? 's' : ''}
+            {t('card.bids', { count: bidCount })}
           </span>
         </div>
       </div>

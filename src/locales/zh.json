@@ -1,28 +1,41 @@
 {
-  "language_switcher": {
-    "label": "语言"
+  "language_switcher": { "label": "语言" },
+  "header": { "title": "CleanMarket", "subtitle": "寻找清洁工作或发布需要完成的工作" },
+  "nav": { "browse_jobs": "浏览工作", "my_jobs": "我的工作" },
+  "auth": { "sign_in_prompt": "登录以发布工作或对列表出价。", "sign_in_google": "使用 Google 登录", "sign_in_github": "使用 GitHub 登录" },
+  "jobs": { "post_button": "+ 发布工作", "no_match": "没有符合您搜索条件的工作。", "loading": "正在加载 CleanMarket…", "empty_no_jobs": "暂无开放的工作", "empty_be_first": "成为第一个发布清洁工作的人！" },
+  "search": { "label": "搜索工作", "placeholder": "搜索工作…", "status_label": "按状态筛选", "status_all": "全部", "status_open": "开放", "clear": "清除" },
+  "card": { "awarded": "已授予", "bids_one": "{{count}} 个出价", "bids_other": "{{count}} 个出价" },
+  "detail": {
+    "back": "← 返回列表", "awarded": "已授予", "posted_by": "由 {{name}} 发布 · {{date}}", "won_by": "中标者",
+    "close_job": "关闭工作", "closing": "关闭中…", "your_listing": "您的列表", "sign_in_to_bid": "登录以出价",
+    "place_bid": "出价", "job_awarded": "工作已授予", "youve_bid": "您已对此工作出价", "bids_with_count": "出价 ({{count}})", "bids": "出价",
+    "your_bid_heading": "您的出价", "bid_amount_label": "出价金额 (USD)", "message_label": "留言（可选，最多 500 字）",
+    "message_placeholder": "介绍一下您自己、空闲时间、经验…", "submitting": "提交中…", "submit_bid": "提交出价", "cancel": "取消",
+    "awarded_notice": "此工作已被授予，不再接受出价。", "sign_in_view": "登录以查看出价信息。", "no_bids_first": "暂无出价 — 成为第一个！",
+    "bids_poster_only": "出价仅对工作发布者可见。", "you": "您", "winner": "中标者", "accept": "接受", "accepting": "接受中…",
+    "award_confirm": "将此工作授予 {{name}}，金额 {{amount}}？", "delete_confirm": "删除此工作？此操作无法撤销。",
+    "invalid_amount": "请输入有效的出价金额。", "message_too_long": "留言不得超过 500 个字符。",
+    "bid_placed": "您的出价已提交！发布者已收到通知。", "bid_failed": "提交出价失败。请重试。", "accept_failed": "接受出价失败。请重试。",
+    "job_awarded_to": "工作已授予 {{name}}！对方已收到通知。", "won_title": "🎉 您赢得了这份工作！",
+    "won_body": "您 {{amount}} 的出价已被 \"{{title}}\" 接受", "new_bid_title": "您的工作有新出价！",
+    "new_bid_body": "{{name}} 对 \"{{title}}\" 出价 {{amount}}", "photo_alt": "照片 {{index}}", "map_alt": "工作地点地图"
   },
-  "header": {
-    "title": "CleanMarket",
-    "subtitle": "寻找清洁工作或发布需要完成的工作"
+  "post": {
+    "heading": "发布清洁工作", "close_modal": "关闭弹窗", "title_label": "标题", "description_label": "描述", "location_label": "地点",
+    "title_placeholder": "例如：深度清洁两居室公寓", "description_placeholder": "描述工作、房产面积、特殊要求…",
+    "location_placeholder": "例如：123 Main St, Brooklyn, NY", "photos_label": "照片（可选，最多 {{count}} 张）",
+    "add_photo": "添加照片", "remove_photo": "移除照片 {{index}}", "preview_alt": "照片预览 {{index}}",
+    "cancel": "取消", "post": "发布工作", "posting": "发布中…", "fill_required": "请填写所有必填字段。", "invalid_image": "仅允许小于 50 MB 的 JPEG/PNG 图片。"
   },
-  "nav": {
-    "browse_jobs": "浏览工作",
-    "my_jobs": "我的工作"
+  "myjobs": {
+    "heading": "我的工作", "signed_in_as": "登录身份", "posted_tab": "我发布的工作", "bidding_tab": "我出价的工作", "loading": "正在加载您的工作…",
+    "empty_posted": "您还没有发布任何工作。", "empty_posted_hint": "使用 \"+ 发布工作\" 创建您的第一个列表。",
+    "empty_bids": "您还没有对任何工作出价。", "empty_bids_hint": "浏览开放的列表并进行您的第一次出价。",
+    "posted_date": "发布于 {{date}}", "your_bid": "您的出价：", "bid_placed": "出价于 {{date}}", "accepted": "已接受",
+    "load_failed": "加载您的工作失败。请重试。", "bids_one": "{{count}} 个出价", "bids_other": "{{count}} 个出价"
   },
-  "auth": {
-    "sign_in_prompt": "登录以发布工作或对列表出价。",
-    "sign_in_google": "使用 Google 登录",
-    "sign_in_github": "使用 GitHub 登录"
-  },
-  "jobs": {
-    "post_button": "+ 发布工作",
-    "no_match": "没有符合您搜索条件的工作。",
-    "loading": "正在加载 CleanMarket…"
-  },
-  "errors": {
-    "db_failed_title": "数据库初始化失败",
-    "db_failed_body": "应用程序设置出现问题。请刷新页面重试。",
-    "refresh": "刷新"
-  }
+  "status": { "open": "开放", "closed": "已关闭", "accepted": "已接受" },
+  "location": { "no_results": "未找到结果" },
+  "errors": { "db_failed_title": "数据库初始化失败", "db_failed_body": "设置应用时出现问题。请刷新页面重试。", "refresh": "刷新" }
 }

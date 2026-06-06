@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { User } from '@proappstore/sdk'
 import { app } from '../lib/app'
 import { generateId } from '../lib/utils'
@@ -14,6 +15,7 @@ const MAX_PHOTOS = 4
 const ALLOWED_TYPES = ['image/jpeg', 'image/png']
 
 export function PostJobModal({ user, onClose, onPosted }: Props) {
+  const { t } = useTranslation()
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [location, setLocation] = useState('')
@@ -25,7 +27,6 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
   const [error, setError] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
 
-  // Keep preview URLs in sync with photos, and revoke stale object URLs
   useEffect(() => {
     const urls = photos.map((f) => URL.createObjectURL(f))
     setPreviewUrls(urls)
@@ -40,7 +41,7 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
       (f) => ALLOWED_TYPES.includes(f.type) && f.size <= 50 * 1024 * 1024,
     )
     if (valid.length < files.length) {
-      setError('Only JPEG/PNG images under 50 MB are allowed.')
+      setError(t('post.invalid_image'))
     }
     setPhotos((prev) => [...prev, ...valid].slice(0, MAX_PHOTOS))
     if (fileRef.current) fileRef.current.value = ''
@@ -63,7 +64,7 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
     e.preventDefault()
     setError('')
     if (!title.trim() || !description.trim() || !location.trim()) {
-      setError('Please fill in all required fields.')
+      setError(t('post.fill_required'))
       return
     }
     setSubmitting(true)
@@ -71,11 +72,9 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
       const jobId = generateId()
       const now = new Date().toISOString()
 
-      // lat/lng captured at selection time — no geocode call here
       const lat = locationLat
       const lng = locationLng
 
-      // Upload photos
       const photoPaths: string[] = []
       for (const file of photos) {
         const ext = file.type === 'image/png' ? 'png' : 'jpg'
@@ -84,7 +83,6 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
         photoPaths.push(path)
       }
 
-      // Insert job — poster_email kept as empty string for schema compat
       await app.db.execute(
         `INSERT INTO jobs (id, poster_id, poster_email, poster_name, title, description, location, lat, lng, status, created_at)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'open', ?)`,
@@ -102,7 +100,6 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
         ],
       )
 
-      // Insert photos in batch
       if (photoPaths.length > 0) {
         await app.db.batch(
           photoPaths.map((path) => ({
@@ -114,7 +111,7 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
 
       onPosted()
     } catch (err) {
-      setError('Failed to post job. Please try again.')
+      setError(t('detail.bid_failed'))
       console.error(err)
     } finally {
       setSubmitting(false)
@@ -125,10 +122,10 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-gray-900/80 p-4">
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Post a Cleaning Job</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('post.heading')}</h2>
           <button
             onClick={onClose}
-            aria-label="Close modal"
+            aria-label={t('post.close_modal')}
             className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-2xl leading-none"
           >
             ×
@@ -141,7 +138,7 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
               htmlFor="job-title"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
-              Title <span className="text-red-500">*</span>
+              {t('post.title_label')} <span className="text-red-500">*</span>
             </label>
             <input
               id="job-title"
@@ -149,7 +146,7 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
               maxLength={80}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Deep clean 2-bed apartment"
+              placeholder={t('post.title_placeholder')}
               className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
             />
             <p className="text-xs text-gray-400 mt-1 text-right">{title.length}/80</p>
@@ -160,7 +157,7 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
               htmlFor="job-description"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
-              Description <span className="text-red-500">*</span>
+              {t('post.description_label')} <span className="text-red-500">*</span>
             </label>
             <textarea
               id="job-description"
@@ -168,7 +165,7 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
               maxLength={1000}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Describe the job, property size, special requirements…"
+              placeholder={t('post.description_placeholder')}
               className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none resize-none"
             />
             <p className="text-xs text-gray-400 mt-1 text-right">{description.length}/1000</p>
@@ -179,34 +176,34 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
               htmlFor="job-location"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
-              Location <span className="text-red-500">*</span>
+              {t('post.location_label')} <span className="text-red-500">*</span>
             </label>
             <LocationAutocomplete
               id="job-location"
               value={location}
               onChange={handleLocationChange}
               onSelect={handleLocationSelect}
-              placeholder="e.g. 123 Main St, Brooklyn, NY"
+              placeholder={t('post.location_placeholder')}
               className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Photos (optional, max {MAX_PHOTOS})
+              {t('post.photos_label', { count: MAX_PHOTOS })}
             </label>
             <div className="flex gap-2 flex-wrap">
               {previewUrls.map((url, i) => (
                 <div key={i} className="relative w-20 h-20">
                   <img
                     src={url}
-                    alt={`Photo preview ${i + 1}`}
+                    alt={t('post.preview_alt', { index: i + 1 })}
                     className="w-20 h-20 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
                   />
                   <button
                     type="button"
                     onClick={() => removePhoto(i)}
-                    aria-label={`Remove photo ${i + 1}`}
+                    aria-label={t('post.remove_photo', { index: i + 1 })}
                     className="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center leading-none"
                   >
                     ×
@@ -217,7 +214,7 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
-                  aria-label="Add photo"
+                  aria-label={t('post.add_photo')}
                   className="w-20 h-20 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center text-gray-400 hover:border-blue-400 hover:text-blue-500 transition-colors text-2xl"
                 >
                   +
@@ -244,14 +241,14 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
               onClick={onClose}
               className="flex-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-2.5 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             >
-              Cancel
+              {t('post.cancel')}
             </button>
             <button
               type="submit"
               disabled={submitting}
               className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white py-2.5 rounded-lg font-semibold transition-colors"
             >
-              {submitting ? 'Posting…' : 'Post Job'}
+              {submitting ? t('post.posting') : t('post.post')}
             </button>
           </div>
         </form>

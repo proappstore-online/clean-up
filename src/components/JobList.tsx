@@ -1,3 +1,5 @@
+import { Sparkles } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { Job } from '../lib/types'
 import { JobCard } from './JobCard'
 
@@ -8,6 +10,8 @@ interface Props {
 }
 
 export function JobList({ jobs, loading, onSelect }: Props) {
+  const { t } = useTranslation()
+
   if (loading) {
     return (
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -21,9 +25,11 @@ export function JobList({ jobs, loading, onSelect }: Props) {
   if (jobs.length === 0) {
     return (
       <div className="text-center py-20 text-gray-400 dark:bg-gray-900 rounded-xl">
-        <div className="text-5xl mb-4">🧹</div>
-        <p className="text-lg font-medium">No open jobs yet</p>
-        <p className="text-sm mt-1">Be the first to post a cleaning job!</p>
+        <div className="flex justify-center mb-4">
+          <Sparkles size={48} className="text-blue-400" />
+        </div>
+        <p className="text-lg font-medium">{t('jobs.empty_no_jobs')}</p>
+        <p className="text-sm mt-1">{t('jobs.empty_be_first')}</p>
       </div>
     )
   }

@@ -1,28 +1,41 @@
 {
-  "language_switcher": {
-    "label": "Ngôn ngữ"
+  "language_switcher": { "label": "Ngôn ngữ" },
+  "header": { "title": "CleanMarket", "subtitle": "Tìm công việc dọn dẹp hoặc đăng việc cần làm" },
+  "nav": { "browse_jobs": "Duyệt công việc", "my_jobs": "Công việc của tôi" },
+  "auth": { "sign_in_prompt": "Đăng nhập để đăng việc hoặc đặt giá thầu cho danh sách.", "sign_in_google": "Đăng nhập bằng Google", "sign_in_github": "Đăng nhập bằng GitHub" },
+  "jobs": { "post_button": "+ Đăng việc", "no_match": "Không có công việc nào phù hợp với tìm kiếm của bạn.", "loading": "Đang tải CleanMarket…", "empty_no_jobs": "Chưa có công việc mở nào", "empty_be_first": "Hãy là người đầu tiên đăng việc dọn dẹp!" },
+  "search": { "label": "Tìm công việc", "placeholder": "Tìm công việc…", "status_label": "Lọc theo trạng thái", "status_all": "Tất cả", "status_open": "Đang mở", "clear": "Xóa" },
+  "card": { "awarded": "Đã trao", "bids_one": "{{count}} lượt đặt giá", "bids_other": "{{count}} lượt đặt giá" },
+  "detail": {
+    "back": "← Quay lại danh sách", "awarded": "Đã trao", "posted_by": "Đăng bởi {{name}} · {{date}}", "won_by": "Thắng bởi",
+    "close_job": "Đóng công việc", "closing": "Đang đóng…", "your_listing": "Tin đăng của bạn", "sign_in_to_bid": "Đăng nhập để đặt giá thầu",
+    "place_bid": "Đặt giá thầu", "job_awarded": "Công việc đã được trao", "youve_bid": "Bạn đã đặt giá cho công việc này", "bids_with_count": "Lượt đặt giá ({{count}})", "bids": "Lượt đặt giá",
+    "your_bid_heading": "Giá thầu của bạn", "bid_amount_label": "Số tiền đặt giá (USD)", "message_label": "Tin nhắn (tùy chọn, tối đa 500 ký tự)",
+    "message_placeholder": "Giới thiệu bản thân, thời gian rảnh, kinh nghiệm…", "submitting": "Đang gửi…", "submit_bid": "Gửi giá thầu", "cancel": "Hủy",
+    "awarded_notice": "Công việc này đã được trao và không còn nhận giá thầu.", "sign_in_view": "Đăng nhập để xem thông tin giá thầu.", "no_bids_first": "Chưa có giá thầu — hãy là người đầu tiên!",
+    "bids_poster_only": "Giá thầu chỉ hiển thị cho người đăng việc.", "you": "Bạn", "winner": "Người thắng", "accept": "Chấp nhận", "accepting": "Đang chấp nhận…",
+    "award_confirm": "Trao công việc này cho {{name}} với giá {{amount}}?", "delete_confirm": "Xóa công việc này? Không thể hoàn tác.",
+    "invalid_amount": "Vui lòng nhập số tiền đặt giá hợp lệ.", "message_too_long": "Tin nhắn phải có 500 ký tự trở xuống.",
+    "bid_placed": "Giá thầu của bạn đã được đặt! Người đăng đã được thông báo.", "bid_failed": "Gửi giá thầu thất bại. Vui lòng thử lại.", "accept_failed": "Chấp nhận giá thầu thất bại. Vui lòng thử lại.",
+    "job_awarded_to": "Công việc đã trao cho {{name}}! Họ đã được thông báo.", "won_title": "🎉 Bạn đã thắng công việc!",
+    "won_body": "Giá thầu {{amount}} của bạn đã được chấp nhận cho \"{{title}}\"", "new_bid_title": "Có giá thầu mới cho công việc của bạn!",
+    "new_bid_body": "{{name}} đặt giá {{amount}} cho \"{{title}}\"", "photo_alt": "Ảnh {{index}}", "map_alt": "Bản đồ vị trí công việc"
   },
-  "header": {
-    "title": "CleanMarket",
-    "subtitle": "Tìm việc làm dọn dẹp hoặc đăng công việc cần thực hiện"
+  "post": {
+    "heading": "Đăng việc dọn dẹp", "close_modal": "Đóng cửa sổ", "title_label": "Tiêu đề", "description_label": "Mô tả", "location_label": "Vị trí",
+    "title_placeholder": "vd. Dọn sạch căn hộ 2 phòng ngủ", "description_placeholder": "Mô tả công việc, diện tích, yêu cầu đặc biệt…",
+    "location_placeholder": "vd. 123 Main St, Brooklyn, NY", "photos_label": "Ảnh (tùy chọn, tối đa {{count}})",
+    "add_photo": "Thêm ảnh", "remove_photo": "Xóa ảnh {{index}}", "preview_alt": "Xem trước ảnh {{index}}",
+    "cancel": "Hủy", "post": "Đăng việc", "posting": "Đang đăng…", "fill_required": "Vui lòng điền tất cả các trường bắt buộc.", "invalid_image": "Chỉ chấp nhận ảnh JPEG/PNG dưới 50 MB."
   },
-  "nav": {
-    "browse_jobs": "Duyệt Công Việc",
-    "my_jobs": "Việc Của Tôi"
+  "myjobs": {
+    "heading": "Công việc của tôi", "signed_in_as": "Đăng nhập với", "posted_tab": "Việc tôi đăng", "bidding_tab": "Việc tôi đặt giá", "loading": "Đang tải công việc của bạn…",
+    "empty_posted": "Bạn chưa đăng công việc nào.", "empty_posted_hint": "Dùng \"+ Đăng việc\" để tạo tin đăng đầu tiên.",
+    "empty_bids": "Bạn chưa đặt giá cho công việc nào.", "empty_bids_hint": "Duyệt các tin đang mở và đặt giá đầu tiên của bạn.",
+    "posted_date": "Đăng {{date}}", "your_bid": "Giá thầu của bạn:", "bid_placed": "Đặt giá {{date}}", "accepted": "Đã chấp nhận",
+    "load_failed": "Tải công việc thất bại. Vui lòng thử lại.", "bids_one": "{{count}} lượt đặt giá", "bids_other": "{{count}} lượt đặt giá"
   },
-  "auth": {
-    "sign_in_prompt": "Đăng nhập để đăng công việc hoặc đặt giá thầu.",
-    "sign_in_google": "Đăng nhập bằng Google",
-    "sign_in_github": "Đăng nhập bằng GitHub"
-  },
-  "jobs": {
-    "post_button": "+ Đăng Việc",
-    "no_match": "Không có công việc nào phù hợp với tìm kiếm của bạn.",
-    "loading": "Đang tải CleanMarket…"
-  },
-  "errors": {
-    "db_failed_title": "Không thể khởi tạo cơ sở dữ liệu",
-    "db_failed_body": "Đã xảy ra sự cố khi thiết lập ứng dụng. Vui lòng làm mới trang để thử lại.",
-    "refresh": "Làm mới"
-  }
+  "status": { "open": "đang mở", "closed": "đã đóng", "accepted": "đã chấp nhận" },
+  "location": { "no_results": "Không tìm thấy kết quả" },
+  "errors": { "db_failed_title": "Khởi tạo cơ sở dữ liệu thất bại", "db_failed_body": "Đã xảy ra sự cố khi thiết lập ứng dụng. Vui lòng làm mới trang để thử lại.", "refresh": "Làm mới" }
 }

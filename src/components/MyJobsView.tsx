@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { CheckCircle2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { initPro } from '@proappstore/sdk'
-
-// ── Row types for typed DB queries ──────────────────────────────────────────
 
 interface JobRow {
   id: string
@@ -30,8 +29,6 @@ interface BidWithJob {
   job_status: string
 }
 
-// ── SDK user type (from useProAuth) ─────────────────────────────────────────
-
 interface User {
   id: string
   login: string
@@ -39,14 +36,10 @@ interface User {
   dateOfBirth: string | null
 }
 
-// ── Props ────────────────────────────────────────────────────────────────────
-
 interface MyJobsViewProps {
   app: ReturnType<typeof initPro>
   user: User
 }
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
 
 function formatDate(iso: string): string {
   try {
@@ -75,22 +68,23 @@ const STATUS_COLORS: Record<string, string> = {
 }
 
 function StatusBadge({ status }: { status: string }) {
+  const { t } = useTranslation()
   const cls = STATUS_COLORS[status] ?? 'bg-gray-100 text-gray-700'
+  const label = ['open', 'closed', 'accepted'].includes(status) ? t(`status.${status}`) : status
   return (
     <span className={`inline-block text-xs font-semibold px-2 py-0.5 rounded-full ${cls}`}>
-      {status}
+      {label}
     </span>
   )
 }
 
-// ── Sub-tab: Jobs I Posted ───────────────────────────────────────────────────
-
 function PostedJobs({ jobs }: { jobs: JobRow[] }) {
+  const { t } = useTranslation()
   if (jobs.length === 0) {
     return (
       <div className="text-center py-16 text-gray-400 dark:text-gray-500">
-        <p className="text-lg font-medium">You haven&apos;t posted any jobs yet.</p>
-        <p className="text-sm mt-1">Use &ldquo;+ Post a Job&rdquo; to create your first listing.</p>
+        <p className="text-lg font-medium">{t('myjobs.empty_posted')}</p>
+        <p className="text-sm mt-1">{t('myjobs.empty_posted_hint')}</p>
       </div>
     )
   }
@@ -110,9 +104,9 @@ function PostedJobs({ jobs }: { jobs: JobRow[] }) {
             <StatusBadge status={job.status} />
           </div>
           <div className="flex items-center gap-4 mt-3 text-sm text-gray-500 dark:text-gray-400">
-            <span>Posted {formatDate(job.created_at)}</span>
+            <span>{t('myjobs.posted_date', { date: formatDate(job.created_at) })}</span>
             <span className="font-medium text-gray-700 dark:text-gray-300">
-              {job.bid_count} {job.bid_count === 1 ? 'bid' : 'bids'}
+              {t('myjobs.bids', { count: job.bid_count })}
             </span>
           </div>
         </li>
@@ -121,14 +115,13 @@ function PostedJobs({ jobs }: { jobs: JobRow[] }) {
   )
 }
 
-// ── Sub-tab: Jobs I Bid On ───────────────────────────────────────────────────
-
 function BidJobs({ bids }: { bids: BidWithJob[] }) {
+  const { t } = useTranslation()
   if (bids.length === 0) {
     return (
       <div className="text-center py-16 text-gray-400 dark:text-gray-500">
-        <p className="text-lg font-medium">You haven&apos;t bid on any jobs yet.</p>
-        <p className="text-sm mt-1">Browse open listings and place your first bid.</p>
+        <p className="text-lg font-medium">{t('myjobs.empty_bids')}</p>
+        <p className="text-sm mt-1">{t('myjobs.empty_bids_hint')}</p>
       </div>
     )
   }
@@ -144,20 +137,20 @@ function BidJobs({ bids }: { bids: BidWithJob[] }) {
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-gray-900 dark:text-white truncate">{bid.title}</p>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                Your bid: <span className="font-semibold text-gray-800 dark:text-gray-200">{formatCurrency(bid.amount)}</span>
+                {t('myjobs.your_bid')} <span className="font-semibold text-gray-800 dark:text-gray-200">{formatCurrency(bid.amount)}</span>
               </p>
             </div>
             <div className="flex flex-col items-end gap-1">
               <StatusBadge status={bid.job_status} />
               {bid.accepted === 1 && (
                 <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
-                  <CheckCircle2 size={14} className="text-green-600" /> Accepted
+                  <CheckCircle2 size={14} className="text-green-600" /> {t('myjobs.accepted')}
                 </span>
               )}
             </div>
           </div>
           <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
-            Bid placed {formatDate(bid.created_at)}
+            {t('myjobs.bid_placed', { date: formatDate(bid.created_at) })}
           </div>
           {bid.message && (
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-300 line-clamp-2">{bid.message}</p>
@@ -168,11 +161,10 @@ function BidJobs({ bids }: { bids: BidWithJob[] }) {
   )
 }
 
-// ── Main component ───────────────────────────────────────────────────────────
-
 type SubTab = 'posted' | 'bidding'
 
 export function MyJobsView({ app, user }: MyJobsViewProps) {
+  const { t } = useTranslation()
   const [subTab, setSubTab] = useState<SubTab>('posted')
   const [postedJobs, setPostedJobs] = useState<JobRow[]>([])
   const [bidJobs, setBidJobs] = useState<BidWithJob[]>([])
@@ -214,7 +206,7 @@ export function MyJobsView({ app, user }: MyJobsViewProps) {
         }
       } catch (err) {
         if (!cancelled) {
-          setError('Failed to load your jobs. Please try again.')
+          setError(t('myjobs.load_failed'))
           console.error('MyJobsView fetch error', err)
         }
       } finally {
@@ -223,19 +215,17 @@ export function MyJobsView({ app, user }: MyJobsViewProps) {
     }
     void fetchData()
     return () => { cancelled = true }
-  }, [app, user.id])
+  }, [app, user.id, t])
 
   return (
     <div>
-      {/* Page header */}
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">My Jobs</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{t('myjobs.heading')}</h2>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          Signed in as <span className="font-medium text-gray-700 dark:text-gray-300">{user.login}</span>
+          {t('myjobs.signed_in_as')} <span className="font-medium text-gray-700 dark:text-gray-300">{user.login}</span>
         </p>
       </div>
 
-      {/* Sub-tab bar */}
       <div className="flex border-b border-gray-200 dark:border-gray-700 mb-6" role="tablist">
         <button
           role="tab"
@@ -247,7 +237,7 @@ export function MyJobsView({ app, user }: MyJobsViewProps) {
               : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
           }`}
         >
-          Jobs I Posted
+          {t('myjobs.posted_tab')}
         </button>
         <button
           role="tab"
@@ -259,16 +249,15 @@ export function MyJobsView({ app, user }: MyJobsViewProps) {
               : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
           }`}
         >
-          Jobs I Bid On
+          {t('myjobs.bidding_tab')}
         </button>
       </div>
 
-      {/* Content */}
       {loading && (
         <div className="flex items-center justify-center py-16">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-3" />
-            <p className="text-sm text-gray-500 dark:text-gray-400">Loading your jobs…</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t('myjobs.loading')}</p>
           </div>
         </div>
       )}

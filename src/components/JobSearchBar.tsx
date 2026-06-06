@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 interface Props {
   keyword: string
   onKeywordChange: (v: string) => void
@@ -16,18 +18,19 @@ export function JobSearchBar({
   inputValue,
   onInputChange,
 }: Props) {
+  const { t } = useTranslation()
   const showClear = keyword !== '' || statusFilter !== 'open'
 
   return (
     <div className="flex flex-col sm:flex-row gap-2 mb-6">
       <div className="flex-1 relative">
         <label htmlFor="job-search" className="sr-only">
-          Search jobs
+          {t('search.label')}
         </label>
         <input
           id="job-search"
           type="text"
-          placeholder="Search jobs…"
+          placeholder={t('search.placeholder')}
           value={inputValue}
           onChange={(e) => onInputChange(e.target.value)}
           className="w-full pl-10 pr-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
@@ -39,7 +42,7 @@ export function JobSearchBar({
 
       <div>
         <label htmlFor="status-filter" className="sr-only">
-          Filter by status
+          {t('search.status_label')}
         </label>
         <select
           id="status-filter"
@@ -47,18 +50,18 @@ export function JobSearchBar({
           onChange={(e) => onStatusFilterChange(e.target.value)}
           className="w-full sm:w-auto px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
         >
-          <option value="">All</option>
-          <option value="open">Open</option>
+          <option value="">{t('search.status_all')}</option>
+          <option value="open">{t('search.status_open')}</option>
         </select>
       </div>
 
       {showClear && (
         <button
           onClick={onClear}
-          aria-label="Clear search and filters"
+          aria-label={t('search.clear')}
           className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 text-sm font-medium transition-colors"
         >
-          Clear
+          {t('search.clear')}
         </button>
       )}
     </div>

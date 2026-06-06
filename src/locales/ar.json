@@ -1,28 +1,41 @@
 {
-  "language_switcher": {
-    "label": "اللغة"
+  "language_switcher": { "label": "اللغة" },
+  "header": { "title": "CleanMarket", "subtitle": "ابحث عن أعمال التنظيف أو انشر عملاً يحتاج إلى إنجاز" },
+  "nav": { "browse_jobs": "تصفح الأعمال", "my_jobs": "أعمالي" },
+  "auth": { "sign_in_prompt": "سجّل الدخول لنشر الأعمال أو تقديم عروض على القوائم.", "sign_in_google": "تسجيل الدخول بواسطة Google", "sign_in_github": "تسجيل الدخول بواسطة GitHub" },
+  "jobs": { "post_button": "+ نشر عمل", "no_match": "لا توجد أعمال تطابق بحثك.", "loading": "جارٍ تحميل CleanMarket…", "empty_no_jobs": "لا توجد أعمال مفتوحة بعد", "empty_be_first": "كن أول من ينشر عمل تنظيف!" },
+  "search": { "label": "بحث عن الأعمال", "placeholder": "بحث عن الأعمال…", "status_label": "تصفية حسب الحالة", "status_all": "الكل", "status_open": "مفتوح", "clear": "مسح" },
+  "card": { "awarded": "تم المنح", "bids_one": "{{count}} عرض", "bids_other": "{{count}} عروض" },
+  "detail": {
+    "back": "← العودة إلى القوائم", "awarded": "تم المنح", "posted_by": "نُشر بواسطة {{name}} · {{date}}", "won_by": "فاز به",
+    "close_job": "إغلاق العمل", "closing": "جارٍ الإغلاق…", "your_listing": "قائمتك", "sign_in_to_bid": "سجّل الدخول لتقديم عرض",
+    "place_bid": "تقديم عرض", "job_awarded": "تم منح العمل", "youve_bid": "لقد قدّمت عرضاً على هذا العمل", "bids_with_count": "العروض ({{count}})", "bids": "العروض",
+    "your_bid_heading": "عرضك", "bid_amount_label": "مبلغ العرض (USD)", "message_label": "رسالة (اختياري، 500 حرف كحد أقصى)",
+    "message_placeholder": "عرّف بنفسك، أوقات توفرك، خبرتك…", "submitting": "جارٍ الإرسال…", "submit_bid": "إرسال العرض", "cancel": "إلغاء",
+    "awarded_notice": "تم منح هذا العمل ولم يعد يقبل العروض.", "sign_in_view": "سجّل الدخول لعرض معلومات العرض.", "no_bids_first": "لا عروض بعد — كن الأول!",
+    "bids_poster_only": "العروض مرئية فقط لناشر العمل.", "you": "أنت", "winner": "الفائز", "accept": "قبول", "accepting": "جارٍ القبول…",
+    "award_confirm": "منح هذا العمل إلى {{name}} مقابل {{amount}}؟", "delete_confirm": "حذف هذا العمل؟ لا يمكن التراجع عن ذلك.",
+    "invalid_amount": "يرجى إدخال مبلغ عرض صالح.", "message_too_long": "يجب ألا تتجاوز الرسالة 500 حرف.",
+    "bid_placed": "تم تقديم عرضك! تم إخطار الناشر.", "bid_failed": "فشل إرسال العرض. يرجى المحاولة مرة أخرى.", "accept_failed": "فشل قبول العرض. يرجى المحاولة مرة أخرى.",
+    "job_awarded_to": "تم منح العمل إلى {{name}}! تم إخطارهم.", "won_title": "🎉 لقد فزت بالعمل!",
+    "won_body": "تم قبول عرضك البالغ {{amount}} لـ \"{{title}}\"", "new_bid_title": "عرض جديد على عملك!",
+    "new_bid_body": "{{name}} قدّم عرضاً بقيمة {{amount}} على \"{{title}}\"", "photo_alt": "صورة {{index}}", "map_alt": "خريطة موقع العمل"
   },
-  "header": {
-    "title": "CleanMarket",
-    "subtitle": "ابحث عن وظائف التنظيف أو انشر العمل الذي يحتاج إلى إنجازه"
+  "post": {
+    "heading": "نشر عمل تنظيف", "close_modal": "إغلاق النافذة", "title_label": "العنوان", "description_label": "الوصف", "location_label": "الموقع",
+    "title_placeholder": "مثال: تنظيف عميق لشقة من غرفتي نوم", "description_placeholder": "صف العمل، حجم العقار، المتطلبات الخاصة…",
+    "location_placeholder": "مثال: 123 Main St, Brooklyn, NY", "photos_label": "الصور (اختياري، بحد أقصى {{count}})",
+    "add_photo": "إضافة صورة", "remove_photo": "إزالة الصورة {{index}}", "preview_alt": "معاينة الصورة {{index}}",
+    "cancel": "إلغاء", "post": "نشر العمل", "posting": "جارٍ النشر…", "fill_required": "يرجى ملء جميع الحقول المطلوبة.", "invalid_image": "يُسمح فقط بصور JPEG/PNG أقل من 50 ميجابايت."
   },
-  "nav": {
-    "browse_jobs": "تصفح الوظائف",
-    "my_jobs": "وظائفي"
+  "myjobs": {
+    "heading": "أعمالي", "signed_in_as": "مسجّل الدخول كـ", "posted_tab": "الأعمال التي نشرتها", "bidding_tab": "الأعمال التي قدّمت عليها", "loading": "جارٍ تحميل أعمالك…",
+    "empty_posted": "لم تنشر أي أعمال بعد.", "empty_posted_hint": "استخدم \"+ نشر عمل\" لإنشاء قائمتك الأولى.",
+    "empty_bids": "لم تقدّم عرضاً على أي عمل بعد.", "empty_bids_hint": "تصفّح القوائم المفتوحة وقدّم عرضك الأول.",
+    "posted_date": "نُشر {{date}}", "your_bid": "عرضك:", "bid_placed": "قُدّم العرض {{date}}", "accepted": "مقبول",
+    "load_failed": "فشل تحميل أعمالك. يرجى المحاولة مرة أخرى.", "bids_one": "{{count}} عرض", "bids_other": "{{count}} عروض"
   },
-  "auth": {
-    "sign_in_prompt": "سجّل الدخول لنشر الوظائف أو تقديم عروض على الإعلانات.",
-    "sign_in_google": "تسجيل الدخول بـ Google",
-    "sign_in_github": "تسجيل الدخول بـ GitHub"
-  },
-  "jobs": {
-    "post_button": "+ نشر وظيفة",
-    "no_match": "لا توجد وظائف تطابق بحثك.",
-    "loading": "جارٍ تحميل CleanMarket…"
-  },
-  "errors": {
-    "db_failed_title": "فشل في تهيئة قاعدة البيانات",
-    "db_failed_body": "حدثت مشكلة في إعداد التطبيق. يرجى تحديث الصفحة للمحاولة مرة أخرى.",
-    "refresh": "تحديث"
-  }
+  "status": { "open": "مفتوح", "closed": "مغلق", "accepted": "مقبول" },
+  "location": { "no_results": "لم يتم العثور على نتائج" },
+  "errors": { "db_failed_title": "فشل تهيئة قاعدة البيانات", "db_failed_body": "حدثت مشكلة أثناء إعداد التطبيق. يرجى تحديث الصفحة للمحاولة مرة أخرى.", "refresh": "تحديث" }
 }
