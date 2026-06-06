@@ -1,41 +1,28 @@
 {
-  "language_switcher": { "label": "भाषा" },
-  "header": { "title": "CleanMarket", "subtitle": "सफाई नौकरियां खोजें या काम पोस्ट करें जो किया जाना है" },
-  "nav": { "browse_jobs": "नौकरियां देखें", "my_jobs": "मेरी नौकरियां" },
-  "auth": { "sign_in_prompt": "नौकरियां पोस्ट करने या बोलियां लगाने के लिए साइन इन करें।", "sign_in_google": "Google से साइन इन करें", "sign_in_github": "GitHub से साइन इन करें" },
-  "jobs": { "post_button": "+ नौकरी पोस्ट करें", "no_match": "आपकी खोज से कोई नौकरी मेल नहीं खाती।", "loading": "CleanMarket लोड हो रहा है…", "empty_no_jobs": "अभी तक कोई खुली नौकरी नहीं", "empty_be_first": "सफाई नौकरी पोस्ट करने वाले पहले व्यक्ति बनें!" },
-  "search": { "label": "नौकरियां खोजें", "placeholder": "नौकरियां खोजें…", "status_label": "स्थिति के अनुसार फ़िल्टर करें", "status_all": "सभी", "status_open": "खुली", "clear": "साफ़ करें" },
-  "card": { "awarded": "प्रदान की गई", "bids_one": "{{count}} बोली", "bids_other": "{{count}} बोलियां" },
-  "detail": {
-    "back": "← सूची पर वापस जाएं", "awarded": "प्रदान की गई", "posted_by": "{{name}} द्वारा पोस्ट किया गया · {{date}}", "won_by": "विजेता",
-    "close_job": "नौकरी बंद करें", "closing": "बंद हो रही है…", "your_listing": "आपकी लिस्टिंग", "sign_in_to_bid": "बोली लगाने के लिए साइन इन करें",
-    "place_bid": "बोली लगाएं", "job_awarded": "नौकरी प्रदान की गई", "youve_bid": "आपने इस नौकरी पर बोली लगाई है", "bids_with_count": "बोलियां ({{count}})", "bids": "बोलियां",
-    "your_bid_heading": "आपकी बोली", "bid_amount_label": "बोली राशि (USD)", "message_label": "संदेश (वैकल्पिक, अधिकतम 500 अक्षर)",
-    "message_placeholder": "अपना परिचय दें, अपनी उपलब्धता, अनुभव…", "submitting": "सबमिट हो रहा है…", "submit_bid": "बोली सबमिट करें", "cancel": "रद्द करें",
-    "awarded_notice": "यह नौकरी प्रदान की जा चुकी है और अब बोलियां स्वीकार नहीं कर रही है।", "sign_in_view": "बोली जानकारी देखने के लिए साइन इन करें।", "no_bids_first": "अभी तक कोई बोली नहीं — पहले बनें!",
-    "bids_poster_only": "बोलियां केवल नौकरी पोस्ट करने वाले को दिखाई देती हैं।", "you": "आप", "winner": "विजेता", "accept": "स्वीकार करें", "accepting": "स्वीकार हो रहा है…",
-    "award_confirm": "यह नौकरी {{name}} को {{amount}} में प्रदान करें?", "delete_confirm": "इस नौकरी को हटाएं? यह पूर्ववत नहीं किया जा सकता।",
-    "invalid_amount": "कृपया एक मान्य बोली राशि दर्ज करें।", "message_too_long": "संदेश 500 अक्षरों या उससे कम का होना चाहिए।",
-    "bid_placed": "आपकी बोली लगा दी गई है! पोस्टर को सूचित कर दिया गया है।", "bid_failed": "बोली सबमिट करने में विफल। कृपया पुनः प्रयास करें।", "accept_failed": "बोली स्वीकार करने में विफल। कृपया पुनः प्रयास करें।",
-    "job_awarded_to": "नौकरी {{name}} को प्रदान की गई! उन्हें सूचित कर दिया गया है।", "won_title": "🎉 आपने नौकरी जीत ली!",
-    "won_body": "आपकी {{amount}} की बोली \"{{title}}\" के लिए स्वीकार कर ली गई", "new_bid_title": "आपकी नौकरी पर नई बोली!",
-    "new_bid_body": "{{name}} ने \"{{title}}\" पर {{amount}} की बोली लगाई", "photo_alt": "फोटो {{index}}", "map_alt": "नौकरी स्थान मानचित्र"
+  "language_switcher": {
+    "label": "भाषा"
   },
-  "post": {
-    "heading": "सफाई नौकरी पोस्ट करें", "close_modal": "मोडल बंद करें", "title_label": "शीर्षक", "description_label": "विवरण", "location_label": "स्थान",
-    "title_placeholder": "जैसे: 2-बेड अपार्टमेंट की गहरी सफाई", "description_placeholder": "नौकरी, संपत्ति का आकार, विशेष आवश्यकताएं बताएं…",
-    "location_placeholder": "जैसे: 123 Main St, Brooklyn, NY", "photos_label": "फोटो (वैकल्पिक, अधिकतम {{count}})",
-    "add_photo": "फोटो जोड़ें", "remove_photo": "फोटो {{index}} हटाएं", "preview_alt": "फोटो पूर्वावलोकन {{index}}",
-    "cancel": "रद्द करें", "post": "नौकरी पोस्ट करें", "posting": "पोस्ट हो रहा है…", "fill_required": "कृपया सभी आवश्यक फ़ील्ड भरें।", "invalid_image": "केवल 50 MB से कम के JPEG/PNG चित्र की अनुमति है।"
+  "header": {
+    "title": "CleanMarket",
+    "subtitle": "सफाई नौकरियां खोजें या काम पोस्ट करें"
   },
-  "myjobs": {
-    "heading": "मेरी नौकरियां", "signed_in_as": "साइन इन किया गया", "posted_tab": "मेरी पोस्ट की गई नौकरियां", "bidding_tab": "नौकरियां जिन पर मैंने बोली लगाई", "loading": "आपकी नौकरियां लोड हो रही हैं…",
-    "empty_posted": "आपने अभी तक कोई नौकरी पोस्ट नहीं की है।", "empty_posted_hint": "अपनी पहली लिस्टिंग बनाने के लिए \"+ नौकरी पोस्ट करें\" का उपयोग करें।",
-    "empty_bids": "आपने अभी तक किसी नौकरी पर बोली नहीं लगाई है।", "empty_bids_hint": "खुली लिस्टिंग देखें और अपनी पहली बोली लगाएं।",
-    "posted_date": "पोस्ट किया गया {{date}}", "your_bid": "आपकी बोली:", "bid_placed": "बोली लगाई गई {{date}}", "accepted": "स्वीकृत",
-    "load_failed": "आपकी नौकरियां लोड करने में विफल। कृपया पुनः प्रयास करें।", "bids_one": "{{count}} बोली", "bids_other": "{{count}} बोलियां"
+  "nav": {
+    "browse_jobs": "नौकरियां देखें",
+    "my_jobs": "मेरी नौकरियां"
   },
-  "status": { "open": "खुली", "closed": "बंद", "accepted": "स्वीकृत" },
-  "location": { "no_results": "कोई परिणाम नहीं मिला" },
-  "errors": { "db_failed_title": "डेटाबेस प्रारंभ करने में विफल", "db_failed_body": "ऐप सेट अप करने में समस्या हुई। पुनः प्रयास करने के लिए पृष्ठ रीफ्रेश करें।", "refresh": "रीफ्रेश" }
+  "auth": {
+    "sign_in_prompt": "नौकरियां पोस्ट करने या बोलियां लगाने के लिए साइन इन करें।",
+    "sign_in_google": "Google से साइन इन करें",
+    "sign_in_github": "GitHub से साइन इन करें"
+  },
+  "jobs": {
+    "post_button": "+ नौकरी पोस्ट करें",
+    "no_match": "आपकी खोज से कोई नौकरी मेल नहीं खाती।",
+    "loading": "CleanMarket लोड हो रहा है…"
+  },
+  "errors": {
+    "db_failed_title": "डेटाबेस प्रारंभ करने में विफल",
+    "db_failed_body": "ऐप सेट अप करने में समस्या हुई। पुनः प्रयास करने के लिए पृष्ठ रीफ्रेश करें।",
+    "refresh": "रीफ्रेश"
+  }
 }

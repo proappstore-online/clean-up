@@ -1,41 +1,28 @@
 {
-  "language_switcher": { "label": "ਭਾਸ਼ਾ" },
-  "header": { "title": "CleanMarket", "subtitle": "ਸਫ਼ਾਈ ਨੌਕਰੀਆਂ ਲੱਭੋ ਜਾਂ ਕੰਮ ਪੋਸਟ ਕਰੋ ਜੋ ਕੀਤਾ ਜਾਣਾ ਹੈ" },
-  "nav": { "browse_jobs": "ਨੌਕਰੀਆਂ ਦੇਖੋ", "my_jobs": "ਮੇਰੀਆਂ ਨੌਕਰੀਆਂ" },
-  "auth": { "sign_in_prompt": "ਨੌਕਰੀਆਂ ਪੋਸਟ ਕਰਨ ਜਾਂ ਬੋਲੀਆਂ ਲਗਾਉਣ ਲਈ ਸਾਈਨ ਇਨ ਕਰੋ।", "sign_in_google": "Google ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ", "sign_in_github": "GitHub ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ" },
-  "jobs": { "post_button": "+ ਨੌਕਰੀ ਪੋਸਟ ਕਰੋ", "no_match": "ਤੁਹਾਡੀ ਖੋਜ ਨਾਲ ਕੋਈ ਨੌਕਰੀ ਮੇਲ ਨਹੀਂ ਖਾਂਦੀ।", "loading": "CleanMarket ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ…", "empty_no_jobs": "ਅਜੇ ਤੱਕ ਕੋਈ ਖੁੱਲ੍ਹੀ ਨੌਕਰੀ ਨਹੀਂ", "empty_be_first": "ਸਫ਼ਾਈ ਨੌਕਰੀ ਪੋਸਟ ਕਰਨ ਵਾਲੇ ਪਹਿਲੇ ਵਿਅਕਤੀ ਬਣੋ!" },
-  "search": { "label": "ਨੌਕਰੀਆਂ ਖੋਜੋ", "placeholder": "ਨੌਕਰੀਆਂ ਖੋਜੋ…", "status_label": "ਸਥਿਤੀ ਅਨੁਸਾਰ ਫਿਲਟਰ ਕਰੋ", "status_all": "ਸਾਰੀਆਂ", "status_open": "ਖੁੱਲ੍ਹੀ", "clear": "ਸਾਫ਼ ਕਰੋ" },
-  "card": { "awarded": "ਦਿੱਤੀ ਗਈ", "bids_one": "{{count}} ਬੋਲੀ", "bids_other": "{{count}} ਬੋਲੀਆਂ" },
-  "detail": {
-    "back": "← ਸੂਚੀ ਤੇ ਵਾਪਸ ਜਾਓ", "awarded": "ਦਿੱਤੀ ਗਈ", "posted_by": "{{name}} ਦੁਆਰਾ ਪੋਸਟ ਕੀਤੀ ਗਈ · {{date}}", "won_by": "ਜੇਤੂ",
-    "close_job": "ਨੌਕਰੀ ਬੰਦ ਕਰੋ", "closing": "ਬੰਦ ਹੋ ਰਹੀ ਹੈ…", "your_listing": "ਤੁਹਾਡੀ ਲਿਸਟਿੰਗ", "sign_in_to_bid": "ਬੋਲੀ ਲਗਾਉਣ ਲਈ ਸਾਈਨ ਇਨ ਕਰੋ",
-    "place_bid": "ਬੋਲੀ ਲਗਾਓ", "job_awarded": "ਨੌਕਰੀ ਦਿੱਤੀ ਗਈ", "youve_bid": "ਤੁਸੀਂ ਇਸ ਨੌਕਰੀ ਤੇ ਬੋਲੀ ਲਗਾਈ ਹੈ", "bids_with_count": "ਬੋਲੀਆਂ ({{count}})", "bids": "ਬੋਲੀਆਂ",
-    "your_bid_heading": "ਤੁਹਾਡੀ ਬੋਲੀ", "bid_amount_label": "ਬੋਲੀ ਰਕਮ (USD)", "message_label": "ਸੁਨੇਹਾ (ਵਿਕਲਪਿਕ, ਵੱਧ ਤੋਂ ਵੱਧ 500 ਅੱਖਰ)",
-    "message_placeholder": "ਆਪਣੀ ਜਾਣ-ਪਛਾਣ ਦਿਓ, ਆਪਣੀ ਉਪਲਬਧਤਾ, ਤਜਰਬਾ…", "submitting": "ਜਮ੍ਹਾਂ ਹੋ ਰਿਹਾ ਹੈ…", "submit_bid": "ਬੋਲੀ ਜਮ੍ਹਾਂ ਕਰੋ", "cancel": "ਰੱਦ ਕਰੋ",
-    "awarded_notice": "ਇਹ ਨੌਕਰੀ ਦਿੱਤੀ ਜਾ ਚੁੱਕੀ ਹੈ ਅਤੇ ਹੁਣ ਬੋਲੀਆਂ ਸਵੀਕਾਰ ਨਹੀਂ ਕਰ ਰਹੀ।", "sign_in_view": "ਬੋਲੀ ਜਾਣਕਾਰੀ ਦੇਖਣ ਲਈ ਸਾਈਨ ਇਨ ਕਰੋ।", "no_bids_first": "ਅਜੇ ਤੱਕ ਕੋਈ ਬੋਲੀ ਨਹੀਂ — ਪਹਿਲੇ ਬਣੋ!",
-    "bids_poster_only": "ਬੋਲੀਆਂ ਸਿਰਫ਼ ਨੌਕਰੀ ਪੋਸਟ ਕਰਨ ਵਾਲੇ ਨੂੰ ਦਿਖਾਈ ਦਿੰਦੀਆਂ ਹਨ।", "you": "ਤੁਸੀਂ", "winner": "ਜੇਤੂ", "accept": "ਸਵੀਕਾਰ ਕਰੋ", "accepting": "ਸਵੀਕਾਰ ਹੋ ਰਿਹਾ ਹੈ…",
-    "award_confirm": "ਇਹ ਨੌਕਰੀ {{name}} ਨੂੰ {{amount}} ਵਿੱਚ ਦੇਣੀ ਹੈ?", "delete_confirm": "ਇਸ ਨੌਕਰੀ ਨੂੰ ਮਿਟਾਉਣਾ ਹੈ? ਇਹ ਵਾਪਸ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ।",
-    "invalid_amount": "ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਵੈਧ ਬੋਲੀ ਰਕਮ ਦਰਜ ਕਰੋ।", "message_too_long": "ਸੁਨੇਹਾ 500 ਅੱਖਰਾਂ ਜਾਂ ਘੱਟ ਦਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ।",
-    "bid_placed": "ਤੁਹਾਡੀ ਬੋਲੀ ਲਗਾ ਦਿੱਤੀ ਗਈ ਹੈ! ਪੋਸਟਰ ਨੂੰ ਸੂਚਿਤ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ।", "bid_failed": "ਬੋਲੀ ਜਮ੍ਹਾਂ ਕਰਨ ਵਿੱਚ ਅਸਫਲ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।", "accept_failed": "ਬੋਲੀ ਸਵੀਕਾਰ ਕਰਨ ਵਿੱਚ ਅਸਫਲ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
-    "job_awarded_to": "ਨੌਕਰੀ {{name}} ਨੂੰ ਦਿੱਤੀ ਗਈ! ਉਹਨਾਂ ਨੂੰ ਸੂਚਿਤ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ।", "won_title": "🎉 ਤੁਸੀਂ ਨੌਕਰੀ ਜਿੱਤ ਲਈ!",
-    "won_body": "ਤੁਹਾਡੀ {{amount}} ਦੀ ਬੋਲੀ \"{{title}}\" ਲਈ ਸਵੀਕਾਰ ਕਰ ਲਈ ਗਈ", "new_bid_title": "ਤੁਹਾਡੀ ਨੌਕਰੀ ਤੇ ਨਵੀਂ ਬੋਲੀ!",
-    "new_bid_body": "{{name}} ਨੇ \"{{title}}\" ਤੇ {{amount}} ਦੀ ਬੋਲੀ ਲਗਾਈ", "photo_alt": "ਫੋਟੋ {{index}}", "map_alt": "ਨੌਕਰੀ ਸਥਾਨ ਨਕਸ਼ਾ"
+  "language_switcher": {
+    "label": "ਭਾਸ਼ਾ"
   },
-  "post": {
-    "heading": "ਸਫ਼ਾਈ ਨੌਕਰੀ ਪੋਸਟ ਕਰੋ", "close_modal": "ਮੋਡਲ ਬੰਦ ਕਰੋ", "title_label": "ਸਿਰਲੇਖ", "description_label": "ਵੇਰਵਾ", "location_label": "ਸਥਾਨ",
-    "title_placeholder": "ਜਿਵੇਂ: 2-ਬੈੱਡ ਅਪਾਰਟਮੈਂਟ ਦੀ ਡੂੰਘੀ ਸਫ਼ਾਈ", "description_placeholder": "ਨੌਕਰੀ, ਜਾਇਦਾਦ ਦਾ ਆਕਾਰ, ਖਾਸ ਲੋੜਾਂ ਦੱਸੋ…",
-    "location_placeholder": "ਜਿਵੇਂ: 123 Main St, Brooklyn, NY", "photos_label": "ਫੋਟੋਆਂ (ਵਿਕਲਪਿਕ, ਵੱਧ ਤੋਂ ਵੱਧ {{count}})",
-    "add_photo": "ਫੋਟੋ ਜੋੜੋ", "remove_photo": "ਫੋਟੋ {{index}} ਹਟਾਓ", "preview_alt": "ਫੋਟੋ ਝਲਕ {{index}}",
-    "cancel": "ਰੱਦ ਕਰੋ", "post": "ਨੌਕਰੀ ਪੋਸਟ ਕਰੋ", "posting": "ਪੋਸਟ ਹੋ ਰਿਹਾ ਹੈ…", "fill_required": "ਕਿਰਪਾ ਕਰਕੇ ਸਾਰੇ ਲੋੜੀਂਦੇ ਖੇਤਰ ਭਰੋ।", "invalid_image": "ਸਿਰਫ਼ 50 MB ਤੋਂ ਘੱਟ ਦੀਆਂ JPEG/PNG ਤਸਵੀਰਾਂ ਦੀ ਆਗਿਆ ਹੈ।"
+  "header": {
+    "title": "CleanMarket",
+    "subtitle": "ਸਫ਼ਾਈ ਨੌਕਰੀਆਂ ਲੱਭੋ ਜਾਂ ਕੰਮ ਪੋਸਟ ਕਰੋ"
   },
-  "myjobs": {
-    "heading": "ਮੇਰੀਆਂ ਨੌਕਰੀਆਂ", "signed_in_as": "ਸਾਈਨ ਇਨ ਕੀਤਾ", "posted_tab": "ਮੇਰੀਆਂ ਪੋਸਟ ਕੀਤੀਆਂ ਨੌਕਰੀਆਂ", "bidding_tab": "ਨੌਕਰੀਆਂ ਜਿਨ੍ਹਾਂ ਤੇ ਮੈਂ ਬੋਲੀ ਲਗਾਈ", "loading": "ਤੁਹਾਡੀਆਂ ਨੌਕਰੀਆਂ ਲੋਡ ਹੋ ਰਹੀਆਂ ਹਨ…",
-    "empty_posted": "ਤੁਸੀਂ ਅਜੇ ਤੱਕ ਕੋਈ ਨੌਕਰੀ ਪੋਸਟ ਨਹੀਂ ਕੀਤੀ।", "empty_posted_hint": "ਆਪਣੀ ਪਹਿਲੀ ਲਿਸਟਿੰਗ ਬਣਾਉਣ ਲਈ \"+ ਨੌਕਰੀ ਪੋਸਟ ਕਰੋ\" ਵਰਤੋ।",
-    "empty_bids": "ਤੁਸੀਂ ਅਜੇ ਤੱਕ ਕਿਸੇ ਨੌਕਰੀ ਤੇ ਬੋਲੀ ਨਹੀਂ ਲਗਾਈ।", "empty_bids_hint": "ਖੁੱਲ੍ਹੀਆਂ ਲਿਸਟਿੰਗਾਂ ਦੇਖੋ ਅਤੇ ਆਪਣੀ ਪਹਿਲੀ ਬੋਲੀ ਲਗਾਓ।",
-    "posted_date": "ਪੋਸਟ ਕੀਤੀ {{date}}", "your_bid": "ਤੁਹਾਡੀ ਬੋਲੀ:", "bid_placed": "ਬੋਲੀ ਲਗਾਈ {{date}}", "accepted": "ਸਵੀਕਾਰ ਕੀਤੀ",
-    "load_failed": "ਤੁਹਾਡੀਆਂ ਨੌਕਰੀਆਂ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।", "bids_one": "{{count}} ਬੋਲੀ", "bids_other": "{{count}} ਬੋਲੀਆਂ"
+  "nav": {
+    "browse_jobs": "ਨੌਕਰੀਆਂ ਦੇਖੋ",
+    "my_jobs": "ਮੇਰੀਆਂ ਨੌਕਰੀਆਂ"
   },
-  "status": { "open": "ਖੁੱਲ੍ਹੀ", "closed": "ਬੰਦ", "accepted": "ਸਵੀਕਾਰ ਕੀਤੀ" },
-  "location": { "no_results": "ਕੋਈ ਨਤੀਜਾ ਨਹੀਂ ਮਿਲਿਆ" },
-  "errors": { "db_failed_title": "ਡੇਟਾਬੇਸ ਸ਼ੁਰੂ ਕਰਨ ਵਿੱਚ ਅਸਫਲ", "db_failed_body": "ਐਪ ਸੈੱਟਅੱਪ ਕਰਨ ਵਿੱਚ ਸਮੱਸਿਆ ਆਈ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰਨ ਲਈ ਪੰਨਾ ਤਾਜ਼ਾ ਕਰੋ।", "refresh": "ਤਾਜ਼ਾ ਕਰੋ" }
+  "auth": {
+    "sign_in_prompt": "ਨੌਕਰੀਆਂ ਪੋਸਟ ਕਰਨ ਜਾਂ ਬੋਲੀਆਂ ਲਗਾਉਣ ਲਈ ਸਾਈਨ ਇਨ ਕਰੋ।",
+    "sign_in_google": "Google ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ",
+    "sign_in_github": "GitHub ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ"
+  },
+  "jobs": {
+    "post_button": "+ ਨੌਕਰੀ ਪੋਸਟ ਕਰੋ",
+    "no_match": "ਤੁਹਾਡੀ ਖੋਜ ਨਾਲ ਕੋਈ ਨੌਕਰੀ ਮੇਲ ਨਹੀਂ ਖਾਂਦੀ।",
+    "loading": "CleanMarket ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ…"
+  },
+  "errors": {
+    "db_failed_title": "ਡੇਟਾਬੇਸ ਸ਼ੁਰੂ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
+    "db_failed_body": "ਐਪ ਸੈੱਟਅੱਪ ਕਰਨ ਵਿੱਚ ਸਮੱਸਿਆ ਆਈ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰਨ ਲਈ ਪੰਨਾ ਤਾਜ਼ਾ ਕਰੋ।",
+    "refresh": "ਤਾਜ਼ਾ ਕਰੋ"
+  }
 }
