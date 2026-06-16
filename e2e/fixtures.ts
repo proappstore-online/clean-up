@@ -11,7 +11,12 @@ export const test = base.extend<{ app: Page }>({
       : {}
     const context = await browser.newContext(contextOptions)
     const page = await context.newPage()
-    const baseUrl = process.env.APP_URL ?? 'http://localhost:5173'
+    // Prefer E2E_BASE_URL (set by CI to the live deployed app), then APP_URL,
+    // then fall back to localhost for local development.
+    const baseUrl =
+      process.env.E2E_BASE_URL ??
+      process.env.APP_URL ??
+      'http://localhost:5173'
     await page.goto(baseUrl, { waitUntil: 'networkidle' })
     await use(page)
     await context.close()
