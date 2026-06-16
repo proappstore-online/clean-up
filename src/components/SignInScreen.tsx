@@ -7,12 +7,9 @@ export function SignInScreen() {
   const { t } = useTranslation()
 
   return (
-    <div
-      className="relative min-h-screen flex items-center justify-center"
-      style={{ backgroundColor: 'var(--paper)' }}
-    >
+    <div className="relative flex items-center justify-center min-h-[80vh]">
       {/* Language switcher — accessible before sign-in */}
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-0 right-0">
         <LanguageSwitcher />
       </div>
 

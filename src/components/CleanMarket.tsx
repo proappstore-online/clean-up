@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { AlertTriangle, Sparkles } from 'lucide-react'
 import { useProAuth } from '@proappstore/sdk/hooks'
 import { useTranslation } from 'react-i18next'
@@ -82,7 +82,7 @@ export function CleanMarket() {
       .catch((err) => {
         console.error('Migration failed', err)
         setMigrationError(true)
-        setReady(true) // unblock the UI so users aren't stuck on spinner
+        setReady(true)
       })
   }, [loading])
 
@@ -164,143 +164,145 @@ export function CleanMarket() {
     setJobs((prev) => prev.map((j) => (j.id === updated.id ? updated : j)))
   }
 
-  // Loading spinner (auth check in progress or migrations running)
-  if (loading || !ready) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 mx-auto mb-3" style={{ borderColor: 'var(--accent)' }} />
-          <p style={{ color: 'var(--muted)' }}>{t('jobs.loading')}</p>
-        </div>
-      </div>
-    )
-  }
-
-  // Migration error — show before sign-in gate so DB errors are always visible
-  if (migrationError) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center max-w-sm">
-          <div className="flex justify-center mb-3">
-            <AlertTriangle size={48} style={{ color: 'var(--error)' }} />
-          </div>
-          <h2 className="text-lg font-semibold mb-2" style={{ color: 'var(--ink)' }}>{t('errors.db_failed_title')}</h2>
-          <p className="text-sm mb-4" style={{ color: 'var(--muted)' }}>{t('errors.db_failed_body')}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="btn btn-primary"
-          >
-            {t('errors.refresh')}
-          </button>
-        </div>
-      </div>
-    )
-  }
-
-  // Full-screen sign-in gate — logged-out users see ONLY this, not the job listing
-  if (!user && !loading && ready) {
-    return <SignInScreen />
-  }
-
+  // Always render the max-w-5xl wrapper so E2E selectors find it.
+  // Inner content varies by auth/ready state.
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6 min-h-screen" style={{ backgroundColor: 'var(--paper)' }}>
-      {/* ── Tab bar (visible on list/mine views) ── */}
-      {view !== 'detail' && (
-        <div className="flex gap-1 mb-6" style={{ borderBottom: '1px solid var(--line)' }}>
-          <button
-            onClick={() => setView('list')}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-              view === 'list'
-                ? 'border-[var(--accent)]'
-                : 'border-transparent'
-            }`}
-            style={{ color: view === 'list' ? 'var(--accent)' : 'var(--muted)' }}
-          >
-            {t('nav.browse_jobs')}
-          </button>
-          {user && (
-            <button
-              onClick={() => setView('mine')}
-              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                view === 'mine'
-                  ? 'border-[var(--accent)]'
-                  : 'border-transparent'
-              }`}
-              style={{ color: view === 'mine' ? 'var(--accent)' : 'var(--muted)' }}
-            >
-              {t('nav.my_jobs')}
-            </button>
-          )}
+    <div className="max-w-5xl mx-auto px-4 py-6 bg-white dark:bg-gray-900 min-h-screen">
+
+      {/* Loading spinner (auth check in progress or migrations running) */}
+      {(loading || !ready) && !migrationError && (
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 mx-auto mb-3" style={{ borderColor: 'var(--accent)' }} />
+            <p style={{ color: 'var(--muted)' }}>{t('jobs.loading')}</p>
+          </div>
         </div>
       )}
 
-      {view === 'list' && (
-        <>
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="flex items-center gap-2 text-2xl font-bold" style={{ color: 'var(--ink)' }}>
-                <Sparkles size={28} style={{ color: 'var(--accent)' }} />
-                {t('header.title')}
-              </h1>
-              <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>{t('header.subtitle')}</p>
+      {/* Migration error */}
+      {migrationError && (
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center max-w-sm">
+            <div className="flex justify-center mb-3">
+              <AlertTriangle size={48} style={{ color: 'var(--error)' }} />
             </div>
-            <div className="flex items-center gap-3">
-              <LanguageSwitcher />
+            <h2 className="text-lg font-semibold mb-2" style={{ color: 'var(--ink)' }}>{t('errors.db_failed_title')}</h2>
+            <p className="text-sm mb-4" style={{ color: 'var(--muted)' }}>{t('errors.db_failed_body')}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="btn btn-primary"
+            >
+              {t('errors.refresh')}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Sign-in gate — logged-out users see ONLY this */}
+      {!loading && ready && !migrationError && !user && (
+        <SignInScreen />
+      )}
+
+      {/* Authenticated app shell */}
+      {!loading && ready && !migrationError && user && (
+        <>
+          {/* ── Tab bar (visible on list/mine views) ── */}
+          {view !== 'detail' && (
+            <div className="flex gap-1 mb-6" style={{ borderBottom: '1px solid var(--line)' }}>
               <button
-                onClick={() => setShowPostModal(true)}
-                className="btn btn-primary"
+                onClick={() => setView('list')}
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                  view === 'list'
+                    ? 'border-[var(--accent)]'
+                    : 'border-transparent'
+                }`}
+                style={{ color: view === 'list' ? 'var(--accent)' : 'var(--muted)' }}
               >
-                {t('jobs.post_button')}
+                {t('nav.browse_jobs')}
+              </button>
+              <button
+                onClick={() => setView('mine')}
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                  view === 'mine'
+                    ? 'border-[var(--accent)]'
+                    : 'border-transparent'
+                }`}
+                style={{ color: view === 'mine' ? 'var(--accent)' : 'var(--muted)' }}
+              >
+                {t('nav.my_jobs')}
               </button>
             </div>
-          </div>
+          )}
 
-          {/* Search bar */}
-          <JobSearchBar
-            keyword={keyword}
-            onKeywordChange={setKeyword}
-            statusFilter={statusFilter}
-            onStatusFilterChange={setStatusFilter}
-            onClear={handleClear}
-            inputValue={inputValue}
-            onInputChange={handleInputChange}
-          />
+          {view === 'list' && (
+            <>
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h1 className="flex items-center gap-2 text-2xl font-bold" style={{ color: 'var(--ink)' }}>
+                    <Sparkles size={28} style={{ color: 'var(--accent)' }} />
+                    {t('header.title')}
+                  </h1>
+                  <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>{t('header.subtitle')}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <LanguageSwitcher />
+                  <button
+                    onClick={() => setShowPostModal(true)}
+                    className="btn btn-primary"
+                  >
+                    {t('jobs.post_button')}
+                  </button>
+                </div>
+              </div>
 
-          {/* No-match message when search yields nothing but jobs exist */}
-          {!jobsLoading && filteredJobs.length === 0 && jobs.length > 0 ? (
-            <div className="text-center py-16" style={{ color: 'var(--muted)' }}>
-              <p className="text-lg font-medium">{t('jobs.no_match')}</p>
-            </div>
-          ) : (
-            <JobList
-              jobs={filteredJobs}
-              loading={jobsLoading}
-              onSelect={handleSelectJob}
+              {/* Search bar */}
+              <JobSearchBar
+                keyword={keyword}
+                onKeywordChange={setKeyword}
+                statusFilter={statusFilter}
+                onStatusFilterChange={setStatusFilter}
+                onClear={handleClear}
+                inputValue={inputValue}
+                onInputChange={handleInputChange}
+              />
+
+              {/* No-match message when search yields nothing but jobs exist */}
+              {!jobsLoading && filteredJobs.length === 0 && jobs.length > 0 ? (
+                <div className="text-center py-16" style={{ color: 'var(--muted)' }}>
+                  <p className="text-lg font-medium">{t('jobs.no_match')}</p>
+                </div>
+              ) : (
+                <JobList
+                  jobs={filteredJobs}
+                  loading={jobsLoading}
+                  onSelect={handleSelectJob}
+                />
+              )}
+            </>
+          )}
+
+          {view === 'mine' && (
+            <MyJobsView app={app} user={user} />
+          )}
+
+          {view === 'detail' && selectedJob && (
+            <JobDetail
+              job={selectedJob}
+              currentUser={user ?? null}
+              onBack={handleBack}
+              onJobUpdated={handleJobUpdated}
+            />
+          )}
+
+          {showPostModal && (
+            <PostJobModal
+              user={user}
+              onClose={() => setShowPostModal(false)}
+              onPosted={handleJobPosted}
             />
           )}
         </>
-      )}
-
-      {view === 'mine' && user && (
-        <MyJobsView app={app} user={user} />
-      )}
-
-      {view === 'detail' && selectedJob && (
-        <JobDetail
-          job={selectedJob}
-          currentUser={user ?? null}
-          onBack={handleBack}
-          onJobUpdated={handleJobUpdated}
-        />
-      )}
-
-      {showPostModal && user && (
-        <PostJobModal
-          user={user}
-          onClose={() => setShowPostModal(false)}
-          onPosted={handleJobPosted}
-        />
       )}
     </div>
   )
