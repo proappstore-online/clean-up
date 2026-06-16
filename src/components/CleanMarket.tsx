@@ -171,7 +171,7 @@ export function CleanMarket() {
     )
   }
 
-  if (!user && !loading && ready) {
+  if (!user) {
     return <SignInScreen />
   }
 
@@ -207,7 +207,7 @@ export function CleanMarket() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6 min-h-screen dark:bg-gray-900">
+    <div className="max-w-5xl mx-auto px-4 py-6 bg-white dark:bg-gray-900 min-h-screen">
       {view !== 'detail' && (
         <div className="flex gap-1 mb-6" style={{ borderBottom: '1px solid var(--line)' }}>
           <button

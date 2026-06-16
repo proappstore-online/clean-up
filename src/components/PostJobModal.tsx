@@ -38,22 +38,16 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
   useEffect(() => {
     const urls = photos.map((f) => URL.createObjectURL(f))
     setPreviewUrls(urls)
-    return () => {
-      urls.forEach((u) => URL.revokeObjectURL(u))
-    }
+    return () => urls.forEach((u) => URL.revokeObjectURL(u))
   }, [photos])
 
-  function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
-    setError(null)
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? [])
-    for (const f of files) {
-      if (!ALLOWED_TYPES.includes(f.type) || f.size > MAX_FILE_BYTES) {
-        setError(t('post.invalid_image'))
-        if (fileInputRef.current) fileInputRef.current.value = ''
-        return
-      }
-    }
-    setPhotos((prev) => [...prev, ...files].slice(0, MAX_PHOTOS))
+    const valid = files.filter(
+      (f) => ALLOWED_TYPES.includes(f.type) && f.size <= MAX_FILE_BYTES,
+    )
+    const combined = [...photos, ...valid].slice(0, MAX_PHOTOS)
+    setPhotos(combined)
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
@@ -63,8 +57,8 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!title.trim() || !description.trim() || !location.trim()) {
-      setError(t('post.fill_required'))
+    if (!title.trim() || !location.trim()) {
+      setError(t('post.error_required'))
       return
     }
     setSubmitting(true)
@@ -74,12 +68,11 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
       const now = new Date().toISOString()
 
       await app.db.execute(
-        `INSERT INTO jobs (id, poster_id, poster_email, poster_name, title, description, location, lat, lng, status, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'open', ?)`,
+        `INSERT INTO jobs (id, poster_id, poster_name, title, description, location, lat, lng, status, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'open', ?)`,
         [
           jobId,
           user.id,
-          '',
           user.login,
           title.trim(),
           description.trim(),
@@ -90,12 +83,12 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
         ],
       )
 
+      // Upload photos
       for (let i = 0; i < photos.length; i++) {
         const file = photos[i]
         const ext = file.type === 'image/png' ? 'png' : 'jpg'
-        const path = `jobs/${jobId}/${i}.${ext}`
-        const buffer = await file.arrayBuffer()
-        await app.storage.upload(path, buffer, file.type)
+        const path = `jobs/${jobId}/photo_${i}.${ext}`
+        await app.storage.upload(path, file, file.type)
         await app.db.execute(
           `INSERT INTO job_photos (id, job_id, path) VALUES (?, ?, ?)`,
           [crypto.randomUUID(), jobId, path],
@@ -103,9 +96,9 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
       }
 
       onPosted()
-      onClose()
-    } catch {
-      setError(t('post.fill_required'))
+    } catch (err) {
+      console.error('Failed to post job', err)
+      setError(t('post.error_failed'))
     } finally {
       setSubmitting(false)
     }
@@ -113,12 +106,12 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-gray-900/80 p-4"
       role="dialog"
       aria-modal="true"
       aria-label={t('post.heading')}
     >
-      <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl bg-white dark:bg-gray-800 shadow-xl">
+      <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl bg-white dark:bg-gray-800 shadow-2xl">
         <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 px-5 py-4">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
             {t('post.heading')}
@@ -126,7 +119,7 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
           <button
             type="button"
             onClick={onClose}
-            aria-label={t('post.close_modal')}
+            aria-label="Close modal"
             className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
           >
             ✕
@@ -143,7 +136,8 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder={t('post.title_placeholder')}
-              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
+              className="input w-full"
+              required
             />
           </div>
 
@@ -155,8 +149,8 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder={t('post.description_placeholder')}
-              rows={4}
-              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+              rows={3}
+              className="input w-full resize-none"
             />
           </div>
 
@@ -165,77 +159,73 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
               {t('post.location_label')}
             </label>
             <LocationAutocomplete
-              id="post-location"
               value={location}
               onChange={setLocation}
-              onSelect={(lat, lng) => setCoords({ lat, lng })}
-              placeholder={t('post.location_placeholder')}
+              onSelect={(place) => {
+                setLocation(place.name)
+                setCoords({ lat: place.lat, lng: place.lng })
+              }}
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              {t('post.photos_label', { count: MAX_PHOTOS })}
+              {t('post.photos_label')} ({photos.length}/{MAX_PHOTOS})
             </label>
-            <div className="flex gap-2 flex-wrap">
-              {previewUrls.map((url, i) => (
-                <div key={i} className="relative w-20 h-20">
-                  <img
-                    src={url}
-                    alt={t('post.preview_alt', { index: i + 1 })}
-                    className="w-20 h-20 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removePhoto(i)}
-                    aria-label={t('post.remove_photo', { index: i + 1 })}
-                    className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center"
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
-              {photos.length < MAX_PHOTOS && (
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="w-20 h-20 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 text-gray-400 hover:border-blue-400 flex items-center justify-center text-sm"
-                >
-                  {t('post.add_photo')}
-                </button>
-              )}
-            </div>
             <input
               ref={fileInputRef}
               type="file"
               accept="image/jpeg,image/png"
               multiple
-              onChange={handleFiles}
+              onChange={handleFileChange}
               className="hidden"
+              id="photo-upload"
             />
-            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-              {t('post.cover_hint')}
-            </p>
+            {photos.length < MAX_PHOTOS && (
+              <label
+                htmlFor="photo-upload"
+                className="flex items-center justify-center w-full h-20 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl cursor-pointer hover:border-blue-400 transition-colors"
+              >
+                <span className="text-sm text-gray-500 dark:text-gray-400">{t('post.photos_add')}</span>
+              </label>
+            )}
+            {previewUrls.length > 0 && (
+              <div className="flex gap-2 mt-2 flex-wrap">
+                {previewUrls.map((url, i) => (
+                  <div key={i} className="relative">
+                    <img src={url} alt={`Preview ${i + 1}`} className="h-16 w-16 object-cover rounded-lg border border-gray-200 dark:border-gray-600" />
+                    <button
+                      type="button"
+                      onClick={() => removePhoto(i)}
+                      className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center"
+                      aria-label={t('post.remove_photo')}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {error && (
             <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
           )}
 
-          <div className="flex justify-end gap-2 pt-2">
+          <div className="flex gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300"
+              className="flex-1 btn btn-secondary"
             >
               {t('post.cancel')}
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-4 py-2 text-sm rounded-lg bg-blue-600 text-white disabled:opacity-50"
+              className="flex-1 btn btn-primary disabled:opacity-50"
             >
-              {submitting ? t('post.posting') : t('post.post')}
+              {submitting ? t('post.submitting') : t('post.submit')}
             </button>
           </div>
         </form>
