@@ -1,41 +1,43 @@
 {
   "language_switcher": { "label": "Lingua" },
-  "header": { "title": "CleanMarket", "subtitle": "Trova lavori di pulizia o pubblica lavori da svolgere" },
-  "nav": { "browse_jobs": "Sfoglia Lavori", "my_jobs": "I Miei Lavori" },
-  "auth": { "sign_in_prompt": "Accedi per pubblicare lavori o fare offerte sugli annunci.", "sign_in_google": "Accedi con Google", "sign_in_github": "Accedi con GitHub" },
-  "jobs": { "post_button": "+ Pubblica Lavoro", "no_match": "Nessun lavoro corrisponde alla tua ricerca.", "loading": "Caricamento CleanMarket…", "empty_no_jobs": "Ancora nessun lavoro aperto", "empty_be_first": "Sii il primo a pubblicare un lavoro di pulizia!" },
+  "header": { "title": "CleanMarket", "subtitle": "Trova lavori di pulizia o pubblica lavoro da fare" },
+  "nav": { "browse_jobs": "Sfoglia lavori", "my_jobs": "I miei lavori" },
+  "auth": { "sign_in_prompt": "Accedi per pubblicare lavori o fare offerte.", "sign_in_google": "Accedi con Google", "sign_in_github": "Accedi con GitHub" },
+  "jobs": { "post_button": "+ Pubblica lavoro", "no_match": "Nessun lavoro corrisponde alla tua ricerca.", "loading": "Caricamento CleanMarket…", "empty_no_jobs": "Nessun lavoro aperto ancora", "empty_be_first": "Sii il primo a pubblicare un lavoro di pulizia!" },
   "search": { "label": "Cerca lavori", "placeholder": "Cerca lavori…", "status_label": "Filtra per stato", "status_all": "Tutti", "status_open": "Aperti", "clear": "Cancella" },
   "card": { "awarded": "Assegnato", "bids_one": "{{count}} offerta", "bids_other": "{{count}} offerte" },
   "detail": {
     "back": "← Torna agli annunci", "awarded": "Assegnato", "posted_by": "Pubblicato da {{name}} · {{date}}", "won_by": "Vinto da",
-    "close_job": "Chiudi Lavoro", "closing": "Chiusura…", "your_listing": "Il tuo annuncio", "sign_in_to_bid": "Accedi per fare un'offerta",
-    "place_bid": "Fai un'offerta", "job_awarded": "Lavoro Assegnato", "youve_bid": "Hai fatto un'offerta su questo lavoro", "bids_with_count": "Offerte ({{count}})", "bids": "Offerte",
-    "your_bid_heading": "La Tua Offerta", "bid_amount_label": "Importo Offerta (USD)", "message_label": "Messaggio (facoltativo, max 500 caratteri)",
-    "message_placeholder": "Presentati, la tua disponibilità, esperienza…", "submitting": "Invio…", "submit_bid": "Invia Offerta", "cancel": "Annulla",
-    "awarded_notice": "Questo lavoro è stato assegnato e non accetta più offerte.", "sign_in_view": "Accedi per vedere le informazioni sull'offerta.", "no_bids_first": "Ancora nessuna offerta — sii il primo!",
-    "bids_poster_only": "Le offerte sono visibili solo a chi ha pubblicato il lavoro.", "you": "Tu", "winner": "Vincitore", "accept": "Accetta", "accepting": "Accettazione…",
-    "award_confirm": "Assegnare questo lavoro a {{name}} per {{amount}}?", "delete_confirm": "Eliminare questo lavoro? Non può essere annullato.",
-    "invalid_amount": "Inserisci un importo di offerta valido.", "message_too_long": "Il messaggio deve essere di 500 caratteri o meno.",
-    "bid_placed": "La tua offerta è stata inviata! Chi ha pubblicato è stato avvisato.", "bid_failed": "Invio dell'offerta fallito. Riprova.", "accept_failed": "Accettazione dell'offerta fallita. Riprova.",
-    "job_awarded_to": "Lavoro assegnato a {{name}}! È stato avvisato.", "won_title": "🎉 Hai vinto il lavoro!",
+    "close_job": "Chiudi lavoro", "closing": "Chiusura…", "your_listing": "Il tuo annuncio", "sign_in_to_bid": "Accedi per fare un'offerta",
+    "place_bid": "Fai un'offerta", "job_awarded": "Lavoro assegnato", "youve_bid": "Hai fatto un'offerta per questo lavoro", "bids_with_count": "Offerte ({{count}})", "bids": "Offerte",
+    "your_bid_heading": "La tua offerta", "bid_amount_label": "Importo offerta (USD)", "message_label": "Messaggio (opzionale, max 500 caratteri)",
+    "message_placeholder": "Presentati, disponibilità, esperienza…", "submitting": "Invio…", "submit_bid": "Invia offerta", "cancel": "Annulla",
+    "awarded_notice": "Questo lavoro è stato assegnato e non accetta più offerte.", "sign_in_view": "Accedi per vedere le offerte.", "no_bids_first": "Nessuna offerta ancora — sii il primo!",
+    "bids_poster_only": "Le offerte sono visibili solo al pubblicatore.", "you": "Tu", "winner": "Vincitore", "accept": "Accetta", "accepting": "Accettazione…",
+    "award_confirm": "Assegna questo lavoro a {{name}} per {{amount}}?", "delete_confirm": "Eliminare questo lavoro? Non può essere annullato.",
+    "invalid_amount": "Inserisci un importo valido.", "message_too_long": "Il messaggio deve essere al massimo 500 caratteri.",
+    "bid_placed": "La tua offerta è stata inviata! Il pubblicatore è stato notificato.", "bid_failed": "Invio offerta fallito. Riprova.", "accept_failed": "Accettazione offerta fallita. Riprova.",
+    "job_awarded_to": "Lavoro assegnato a {{name}}! È stato notificato.", "won_title": "🎉 Hai vinto il lavoro!",
     "won_body": "La tua offerta di {{amount}} è stata accettata per \"{{title}}\"", "new_bid_title": "Nuova offerta sul tuo lavoro!",
-    "new_bid_body": "{{name}} ha offerto {{amount}} su \"{{title}}\"", "photo_alt": "Foto {{index}}", "map_alt": "Mappa della posizione del lavoro"
+    "new_bid_body": "{{name}} ha offerto {{amount}} per \"{{title}}\"", "photo_alt": "Foto {{index}}", "map_alt": "Mappa posizione lavoro",
+    "add_photo": "Aggiungi foto", "remove_photo": "Rimuovi foto {{index}}", "photo_management_hint": "La prima foto è l'immagine di copertina"
   },
   "post": {
-    "heading": "Pubblica un Lavoro di Pulizia", "close_modal": "Chiudi finestra", "title_label": "Titolo", "description_label": "Descrizione", "location_label": "Posizione",
-    "title_placeholder": "es. Pulizia profonda appartamento 2 camere", "description_placeholder": "Descrivi il lavoro, la dimensione, requisiti speciali…",
-    "location_placeholder": "es. 123 Main St, Brooklyn, NY", "photos_label": "Foto (facoltative, max {{count}})",
+    "heading": "Pubblica lavoro di pulizia", "close_modal": "Chiudi", "title_label": "Titolo", "description_label": "Descrizione", "location_label": "Posizione",
+    "title_placeholder": "es. Pulizia profonda appartamento 2 camere", "description_placeholder": "Descrivi il lavoro, dimensioni proprietà, requisiti speciali…",
+    "location_placeholder": "es. 123 Main St, Brooklyn, NY", "photos_label": "Foto (opzionale, max {{count}})",
+    "cover_hint": "La prima foto sarà usata come immagine di copertina.",
     "add_photo": "Aggiungi foto", "remove_photo": "Rimuovi foto {{index}}", "preview_alt": "Anteprima foto {{index}}",
-    "cancel": "Annulla", "post": "Pubblica Lavoro", "posting": "Pubblicazione…", "fill_required": "Compila tutti i campi obbligatori.", "invalid_image": "Sono consentite solo immagini JPEG/PNG sotto i 50 MB."
+    "cancel": "Annulla", "post": "Pubblica lavoro", "posting": "Pubblicazione…", "fill_required": "Compila tutti i campi obbligatori.", "invalid_image": "Sono consentite solo immagini JPEG/PNG sotto 50 MB."
   },
   "myjobs": {
-    "heading": "I Miei Lavori", "signed_in_as": "Connesso come", "posted_tab": "Lavori Pubblicati", "bidding_tab": "Lavori su cui ho Offerto", "loading": "Caricamento dei tuoi lavori…",
-    "empty_posted": "Non hai ancora pubblicato lavori.", "empty_posted_hint": "Usa \"+ Pubblica Lavoro\" per creare il tuo primo annuncio.",
-    "empty_bids": "Non hai ancora fatto offerte su nessun lavoro.", "empty_bids_hint": "Sfoglia gli annunci aperti e fai la tua prima offerta.",
-    "posted_date": "Pubblicato {{date}}", "your_bid": "La tua offerta:", "bid_placed": "Offerta inviata {{date}}", "accepted": "Accettata",
-    "load_failed": "Caricamento dei tuoi lavori fallito. Riprova.", "bids_one": "{{count}} offerta", "bids_other": "{{count}} offerte"
+    "heading": "I miei lavori", "signed_in_as": "Accesso come", "posted_tab": "Lavori pubblicati", "bidding_tab": "Lavori con offerte", "loading": "Caricamento lavori…",
+    "empty_posted": "Non hai ancora pubblicato lavori.", "empty_posted_hint": "Usa \"+ Pubblica lavoro\" per creare il primo annuncio.",
+    "empty_bids": "Non hai ancora fatto offerte.", "empty_bids_hint": "Sfoglia gli annunci aperti e fai la prima offerta.",
+    "posted_date": "Pubblicato {{date}}", "your_bid": "La tua offerta:", "bid_placed": "Offerta {{date}}", "accepted": "Accettato",
+    "load_failed": "Caricamento lavori fallito. Riprova.", "bids_one": "{{count}} offerta", "bids_other": "{{count}} offerte"
   },
   "status": { "open": "aperto", "closed": "chiuso", "accepted": "accettato" },
   "location": { "no_results": "Nessun risultato trovato" },
-  "errors": { "db_failed_title": "Inizializzazione del database fallita", "db_failed_body": "Si è verificato un problema durante la configurazione dell'app. Aggiorna la pagina per riprovare.", "refresh": "Aggiorna" }
+  "errors": { "db_failed_title": "Inizializzazione database fallita", "db_failed_body": "Si è verificato un problema durante la configurazione. Aggiorna la pagina.", "refresh": "Aggiorna" }
 }

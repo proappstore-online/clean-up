@@ -19,12 +19,14 @@
     "bid_placed": "تم تقديم عرضك! تم إخطار الناشر.", "bid_failed": "فشل إرسال العرض. يرجى المحاولة مرة أخرى.", "accept_failed": "فشل قبول العرض. يرجى المحاولة مرة أخرى.",
     "job_awarded_to": "تم منح العمل إلى {{name}}! تم إخطارهم.", "won_title": "🎉 لقد فزت بالعمل!",
     "won_body": "تم قبول عرضك البالغ {{amount}} لـ \"{{title}}\"", "new_bid_title": "عرض جديد على عملك!",
-    "new_bid_body": "{{name}} قدّم عرضاً بقيمة {{amount}} على \"{{title}}\"", "photo_alt": "صورة {{index}}", "map_alt": "خريطة موقع العمل"
+    "new_bid_body": "{{name}} قدّم عرضاً بقيمة {{amount}} على \"{{title}}\"", "photo_alt": "صورة {{index}}", "map_alt": "خريطة موقع العمل",
+    "add_photo": "إضافة صورة", "remove_photo": "إزالة الصورة {{index}}", "photo_management_hint": "الصورة الأولى هي صورة الغلاف"
   },
   "post": {
     "heading": "نشر عمل تنظيف", "close_modal": "إغلاق النافذة", "title_label": "العنوان", "description_label": "الوصف", "location_label": "الموقع",
     "title_placeholder": "مثال: تنظيف عميق لشقة من غرفتي نوم", "description_placeholder": "صف العمل، حجم العقار، المتطلبات الخاصة…",
     "location_placeholder": "مثال: 123 Main St, Brooklyn, NY", "photos_label": "الصور (اختياري، بحد أقصى {{count}})",
+    "cover_hint": "سيتم استخدام الصورة الأولى كصورة غلاف في القائمة.",
     "add_photo": "إضافة صورة", "remove_photo": "إزالة الصورة {{index}}", "preview_alt": "معاينة الصورة {{index}}",
     "cancel": "إلغاء", "post": "نشر العمل", "posting": "جارٍ النشر…", "fill_required": "يرجى ملء جميع الحقول المطلوبة.", "invalid_image": "يُسمح فقط بصور JPEG/PNG أقل من 50 ميجابايت."
   },

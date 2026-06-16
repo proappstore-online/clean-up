@@ -19,12 +19,14 @@
     "bid_placed": "Giá thầu của bạn đã được đặt! Người đăng đã được thông báo.", "bid_failed": "Gửi giá thầu thất bại. Vui lòng thử lại.", "accept_failed": "Chấp nhận giá thầu thất bại. Vui lòng thử lại.",
     "job_awarded_to": "Công việc đã trao cho {{name}}! Họ đã được thông báo.", "won_title": "🎉 Bạn đã thắng công việc!",
     "won_body": "Giá thầu {{amount}} của bạn đã được chấp nhận cho \"{{title}}\"", "new_bid_title": "Có giá thầu mới cho công việc của bạn!",
-    "new_bid_body": "{{name}} đặt giá {{amount}} cho \"{{title}}\"", "photo_alt": "Ảnh {{index}}", "map_alt": "Bản đồ vị trí công việc"
+    "new_bid_body": "{{name}} đặt giá {{amount}} cho \"{{title}}\"", "photo_alt": "Ảnh {{index}}", "map_alt": "Bản đồ vị trí công việc",
+    "add_photo": "Thêm ảnh", "remove_photo": "Xóa ảnh {{index}}", "photo_management_hint": "Ảnh đầu tiên là ảnh bìa"
   },
   "post": {
     "heading": "Đăng việc dọn dẹp", "close_modal": "Đóng cửa sổ", "title_label": "Tiêu đề", "description_label": "Mô tả", "location_label": "Vị trí",
     "title_placeholder": "vd. Dọn sạch căn hộ 2 phòng ngủ", "description_placeholder": "Mô tả công việc, diện tích, yêu cầu đặc biệt…",
     "location_placeholder": "vd. 123 Main St, Brooklyn, NY", "photos_label": "Ảnh (tùy chọn, tối đa {{count}})",
+    "cover_hint": "Ảnh đầu tiên sẽ được dùng làm ảnh bìa trên danh sách.",
     "add_photo": "Thêm ảnh", "remove_photo": "Xóa ảnh {{index}}", "preview_alt": "Xem trước ảnh {{index}}",
     "cancel": "Hủy", "post": "Đăng việc", "posting": "Đang đăng…", "fill_required": "Vui lòng điền tất cả các trường bắt buộc.", "invalid_image": "Chỉ chấp nhận ảnh JPEG/PNG dưới 50 MB."
   },

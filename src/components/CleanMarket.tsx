@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AlertTriangle, Sparkles } from 'lucide-react'
-import { useProAuth } from '@proappstore/sdk/hooks'
+import { useProAuth } from '@proappstore/sdk'
 import { useTranslation } from 'react-i18next'
 import { app } from '../lib/app'
 import { runMigrations } from '../lib/db'
-import { JobList } from './JobList'
-import { JobSearchBar } from './JobSearchBar'
-import { PostJobModal } from './PostJobModal'
-import { JobDetail } from './JobDetail'
-import { MyJobsView } from './MyJobsView'
-import { LanguageSwitcher } from './LanguageSwitcher'
-import { SignInScreen } from './SignInScreen'
 import type { Job } from '../lib/types'
+import { JobList } from './JobList'
+import { JobDetail } from './JobDetail'
+import { JobSearchBar } from './JobSearchBar'
+import { LanguageSwitcher } from './LanguageSwitcher'
+import { MyJobsView } from './MyJobsView'
+import { PostJobModal } from './PostJobModal'
+import { SignInScreen } from './SignInScreen'
 
 type View = 'list' | 'detail' | 'mine'
 
@@ -28,20 +28,17 @@ export function CleanMarket() {
   const [jobsLoading, setJobsLoading] = useState(true)
   const [refreshKey, setRefreshKey] = useState(0)
 
-  // Search / filter state
   const [inputValue, setInputValue] = useState('')
   const [keyword, setKeyword] = useState('')
   const [statusFilter, setStatusFilter] = useState('open')
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // When user signs out while on 'mine', fall back to 'list'
   useEffect(() => {
     if (!user && view === 'mine') {
       setView('list')
     }
   }, [user, view])
 
-  // Debounce: update keyword 300ms after the user stops typing
   useEffect(() => {
     if (debounceTimer.current) clearTimeout(debounceTimer.current)
     debounceTimer.current = setTimeout(() => {
@@ -52,7 +49,6 @@ export function CleanMarket() {
     }
   }, [inputValue])
 
-  // Derived filtered list — pure memo, never mutates jobs
   const filteredJobs = useMemo(() => {
     const lower = keyword.toLowerCase()
     return jobs.filter((job) => {
@@ -82,7 +78,7 @@ export function CleanMarket() {
       .catch((err) => {
         console.error('Migration failed', err)
         setMigrationError(true)
-        setReady(true) // unblock the UI so users aren't stuck on spinner
+        setReady(true)
       })
   }, [loading])
 
@@ -164,8 +160,7 @@ export function CleanMarket() {
     setJobs((prev) => prev.map((j) => (j.id === updated.id ? updated : j)))
   }
 
-  // Loading spinner (auth check in progress or migrations running)
-  if (loading || !ready) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
@@ -176,7 +171,21 @@ export function CleanMarket() {
     )
   }
 
-  // Migration error — show before sign-in gate so DB errors are always visible
+  if (!user) {
+    return <SignInScreen />
+  }
+
+  if (!ready) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 mx-auto mb-3" style={{ borderColor: 'var(--accent)' }} />
+          <p style={{ color: 'var(--muted)' }}>{t('jobs.loading')}</p>
+        </div>
+      </div>
+    )
+  }
+
   if (migrationError) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -188,7 +197,7 @@ export function CleanMarket() {
           <p className="text-sm mb-4" style={{ color: 'var(--muted)' }}>{t('errors.db_failed_body')}</p>
           <button
             onClick={() => window.location.reload()}
-            className="btn btn-primary"
+            className="btn btn-primary px-4 py-2 text-sm font-semibold"
           >
             {t('errors.refresh')}
           </button>
@@ -197,22 +206,14 @@ export function CleanMarket() {
     )
   }
 
-  // Full-screen sign-in gate — logged-out users see ONLY this, not the job listing
-  if (!user && !loading && ready) {
-    return <SignInScreen />
-  }
-
   return (
     <div className="max-w-5xl mx-auto px-4 py-6 min-h-screen" style={{ backgroundColor: 'var(--paper)' }}>
-      {/* ── Tab bar (visible on list/mine views) ── */}
       {view !== 'detail' && (
         <div className="flex gap-1 mb-6" style={{ borderBottom: '1px solid var(--line)' }}>
           <button
             onClick={() => setView('list')}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-              view === 'list'
-                ? 'border-[var(--accent)]'
-                : 'border-transparent'
+              view === 'list' ? 'border-current' : 'border-transparent'
             }`}
             style={{ color: view === 'list' ? 'var(--accent)' : 'var(--muted)' }}
           >
@@ -222,9 +223,7 @@ export function CleanMarket() {
             <button
               onClick={() => setView('mine')}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                view === 'mine'
-                  ? 'border-[var(--accent)]'
-                  : 'border-transparent'
+                view === 'mine' ? 'border-current' : 'border-transparent'
               }`}
               style={{ color: view === 'mine' ? 'var(--accent)' : 'var(--muted)' }}
             >
@@ -236,10 +235,9 @@ export function CleanMarket() {
 
       {view === 'list' && (
         <>
-          {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="flex items-center gap-2 text-2xl font-bold" style={{ color: 'var(--ink)' }}>
+              <h1 className="display-font flex items-center gap-2 text-2xl font-bold" style={{ color: 'var(--ink)' }}>
                 <Sparkles size={28} style={{ color: 'var(--accent)' }} />
                 {t('header.title')}
               </h1>
@@ -247,16 +245,17 @@ export function CleanMarket() {
             </div>
             <div className="flex items-center gap-3">
               <LanguageSwitcher />
-              <button
-                onClick={() => setShowPostModal(true)}
-                className="btn btn-primary"
-              >
-                {t('jobs.post_button')}
-              </button>
+              {user && (
+                <button
+                  onClick={() => setShowPostModal(true)}
+                  className="btn btn-primary font-semibold px-4 py-2"
+                >
+                  {t('jobs.post_button')}
+                </button>
+              )}
             </div>
           </div>
 
-          {/* Search bar */}
           <JobSearchBar
             keyword={keyword}
             onKeywordChange={setKeyword}
@@ -267,7 +266,6 @@ export function CleanMarket() {
             onInputChange={handleInputChange}
           />
 
-          {/* No-match message when search yields nothing but jobs exist */}
           {!jobsLoading && filteredJobs.length === 0 && jobs.length > 0 ? (
             <div className="text-center py-16" style={{ color: 'var(--muted)' }}>
               <p className="text-lg font-medium">{t('jobs.no_match')}</p>
