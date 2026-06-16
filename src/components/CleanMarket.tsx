@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { AlertTriangle, Sparkles } from 'lucide-react'
 import { useProAuth } from '@proappstore/sdk/hooks'
 import { useTranslation } from 'react-i18next'
@@ -10,6 +10,7 @@ import { PostJobModal } from './PostJobModal'
 import { JobDetail } from './JobDetail'
 import { MyJobsView } from './MyJobsView'
 import { LanguageSwitcher } from './LanguageSwitcher'
+import { SignInScreen } from './SignInScreen'
 import type { Job } from '../lib/types'
 
 type View = 'list' | 'detail' | 'mine'
@@ -163,15 +164,21 @@ export function CleanMarket() {
     setJobs((prev) => prev.map((j) => (j.id === updated.id ? updated : j)))
   }
 
-  if (!ready) {
+  // Loading: migrations still running (or auth still resolving)
+  if (loading || !ready) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto mb-3" />
-          <p className="text-gray-500">{t('jobs.loading')}</p>
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 mx-auto mb-3" style={{ borderColor: 'var(--accent)' }} />
+          <p style={{ color: 'var(--muted)' }}>{t('jobs.loading')}</p>
         </div>
       </div>
     )
+  }
+
+  // Not logged in — show dedicated sign-in screen
+  if (!user) {
+    return <SignInScreen />
   }
 
   if (migrationError) {
@@ -181,11 +188,11 @@ export function CleanMarket() {
           <div className="flex justify-center mb-3">
             <AlertTriangle size={48} className="text-red-500" />
           </div>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{t('errors.db_failed_title')}</h2>
-          <p className="text-sm text-gray-500 mb-4">{t('errors.db_failed_body')}</p>
+          <h2 className="text-lg font-semibold mb-2" style={{ color: 'var(--ink)' }}>{t('errors.db_failed_title')}</h2>
+          <p className="text-sm mb-4" style={{ color: 'var(--muted)' }}>{t('errors.db_failed_body')}</p>
           <button
             onClick={() => window.location.reload()}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+            className="btn btn-primary"
           >
             {t('errors.refresh')}
           </button>
@@ -195,32 +202,32 @@ export function CleanMarket() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6 dark:bg-gray-900 min-h-screen">
+    <div className="max-w-5xl mx-auto px-4 py-6 min-h-screen" style={{ background: 'var(--paper)' }}>
       {/* ── Tab bar (visible on list/mine views) ── */}
       {view !== 'detail' && (
-        <div className="flex gap-1 mb-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex gap-1 mb-6" style={{ borderBottom: '1px solid var(--line)' }}>
           <button
             onClick={() => setView('list')}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
               view === 'list'
-                ? 'border-blue-600 text-blue-600 dark:text-blue-400'
-                : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                ? 'border-blue-600'
+                : 'border-transparent'
             }`}
+            style={{ color: view === 'list' ? 'var(--accent)' : 'var(--muted)' }}
           >
             {t('nav.browse_jobs')}
           </button>
-          {user && (
-            <button
-              onClick={() => setView('mine')}
-              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                view === 'mine'
-                  ? 'border-blue-600 text-blue-600 dark:text-blue-400'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
-              }`}
-            >
-              {t('nav.my_jobs')}
-            </button>
-          )}
+          <button
+            onClick={() => setView('mine')}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+              view === 'mine'
+                ? 'border-blue-600'
+                : 'border-transparent'
+            }`}
+            style={{ color: view === 'mine' ? 'var(--accent)' : 'var(--muted)' }}
+          >
+            {t('nav.my_jobs')}
+          </button>
         </div>
       )}
 
@@ -229,44 +236,22 @@ export function CleanMarket() {
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="flex items-center gap-2 text-2xl font-bold text-gray-900 dark:text-white">
-                <Sparkles size={28} className="text-blue-500" />
+              <h1 className="flex items-center gap-2 text-2xl font-bold" style={{ color: 'var(--ink)' }}>
+                <Sparkles size={28} style={{ color: 'var(--accent)' }} />
                 {t('header.title')}
               </h1>
-              <p className="text-sm text-gray-500 mt-1">{t('header.subtitle')}</p>
+              <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>{t('header.subtitle')}</p>
             </div>
             <div className="flex items-center gap-3">
               <LanguageSwitcher />
-              {user && (
-                <button
-                  onClick={() => setShowPostModal(true)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors"
-                >
-                  {t('jobs.post_button')}
-                </button>
-              )}
+              <button
+                onClick={() => setShowPostModal(true)}
+                className="btn btn-primary"
+              >
+                {t('jobs.post_button')}
+              </button>
             </div>
           </div>
-
-          {!user && !loading && (
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6 text-sm text-blue-800 dark:text-blue-300">
-              <p className="mb-3">{t('auth.sign_in_prompt')}</p>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={() => app.auth.signIn('google')}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors"
-                >
-                  {t('auth.sign_in_google')}
-                </button>
-                <button
-                  onClick={() => app.auth.signIn()}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors"
-                >
-                  {t('auth.sign_in_github')}
-                </button>
-              </div>
-            </div>
-          )}
 
           {/* Search bar */}
           <JobSearchBar
@@ -281,7 +266,7 @@ export function CleanMarket() {
 
           {/* No-match message when search yields nothing but jobs exist */}
           {!jobsLoading && filteredJobs.length === 0 && jobs.length > 0 ? (
-            <div className="text-center py-16 text-gray-400 dark:text-gray-500">
+            <div className="text-center py-16" style={{ color: 'var(--muted)' }}>
               <p className="text-lg font-medium">{t('jobs.no_match')}</p>
             </div>
           ) : (
@@ -294,20 +279,20 @@ export function CleanMarket() {
         </>
       )}
 
-      {view === 'mine' && user && (
+      {view === 'mine' && (
         <MyJobsView app={app} user={user} />
       )}
 
       {view === 'detail' && selectedJob && (
         <JobDetail
           job={selectedJob}
-          currentUser={user ?? null}
+          currentUser={user}
           onBack={handleBack}
           onJobUpdated={handleJobUpdated}
         />
       )}
 
-      {showPostModal && user && (
+      {showPostModal && (
         <PostJobModal
           user={user}
           onClose={() => setShowPostModal(false)}
