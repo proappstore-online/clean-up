@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { AlertTriangle, Sparkles } from 'lucide-react'
 import { useProAuth } from '@proappstore/sdk/hooks'
 import { useTranslation } from 'react-i18next'
@@ -164,7 +164,7 @@ export function CleanMarket() {
     setJobs((prev) => prev.map((j) => (j.id === updated.id ? updated : j)))
   }
 
-  // Loading: migrations still running (or auth still resolving)
+  // Loading spinner (auth check in progress or migrations running)
   if (loading || !ready) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -176,7 +176,7 @@ export function CleanMarket() {
     )
   }
 
-  // Not logged in — show dedicated sign-in screen
+  // Dedicated sign-in screen for logged-out users
   if (!user) {
     return <SignInScreen />
   }
@@ -186,7 +186,7 @@ export function CleanMarket() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center max-w-sm">
           <div className="flex justify-center mb-3">
-            <AlertTriangle size={48} className="text-red-500" />
+            <AlertTriangle size={48} style={{ color: 'var(--error)' }} />
           </div>
           <h2 className="text-lg font-semibold mb-2" style={{ color: 'var(--ink)' }}>{t('errors.db_failed_title')}</h2>
           <p className="text-sm mb-4" style={{ color: 'var(--muted)' }}>{t('errors.db_failed_body')}</p>
@@ -202,7 +202,7 @@ export function CleanMarket() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6 min-h-screen" style={{ background: 'var(--paper)' }}>
+    <div className="max-w-5xl mx-auto px-4 py-6 min-h-screen" style={{ backgroundColor: 'var(--paper)' }}>
       {/* ── Tab bar (visible on list/mine views) ── */}
       {view !== 'detail' && (
         <div className="flex gap-1 mb-6" style={{ borderBottom: '1px solid var(--line)' }}>
@@ -210,24 +210,26 @@ export function CleanMarket() {
             onClick={() => setView('list')}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
               view === 'list'
-                ? 'border-blue-600'
+                ? 'border-[var(--accent)]'
                 : 'border-transparent'
             }`}
             style={{ color: view === 'list' ? 'var(--accent)' : 'var(--muted)' }}
           >
             {t('nav.browse_jobs')}
           </button>
-          <button
-            onClick={() => setView('mine')}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-              view === 'mine'
-                ? 'border-blue-600'
-                : 'border-transparent'
-            }`}
-            style={{ color: view === 'mine' ? 'var(--accent)' : 'var(--muted)' }}
-          >
-            {t('nav.my_jobs')}
-          </button>
+          {user && (
+            <button
+              onClick={() => setView('mine')}
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                view === 'mine'
+                  ? 'border-[var(--accent)]'
+                  : 'border-transparent'
+              }`}
+              style={{ color: view === 'mine' ? 'var(--accent)' : 'var(--muted)' }}
+            >
+              {t('nav.my_jobs')}
+            </button>
+          )}
         </div>
       )}
 
@@ -279,20 +281,20 @@ export function CleanMarket() {
         </>
       )}
 
-      {view === 'mine' && (
+      {view === 'mine' && user && (
         <MyJobsView app={app} user={user} />
       )}
 
       {view === 'detail' && selectedJob && (
         <JobDetail
           job={selectedJob}
-          currentUser={user}
+          currentUser={user ?? null}
           onBack={handleBack}
           onJobUpdated={handleJobUpdated}
         />
       )}
 
-      {showPostModal && (
+      {showPostModal && user && (
         <PostJobModal
           user={user}
           onClose={() => setShowPostModal(false)}

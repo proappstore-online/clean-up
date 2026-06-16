@@ -7,47 +7,54 @@ export function SignInScreen() {
 
   return (
     <div
-      className="flex items-center justify-center min-h-screen"
-      style={{ background: 'var(--paper)' }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        padding: '2rem',
+        backgroundColor: 'var(--paper)',
+      }}
     >
       <div
-        className="card text-center w-full max-w-sm mx-4"
-        style={{ padding: '2.5rem 2rem' }}
+        className="card"
+        style={{
+          maxWidth: '420px',
+          width: '100%',
+          padding: '2.5rem 2rem',
+          textAlign: 'center',
+        }}
       >
-        {/* Logo / wordmark */}
-        <div
-          className="flex items-center justify-center gap-2 mb-2"
-          style={{ color: 'var(--accent)' }}
-        >
-          <Sparkles size={36} />
-          <span
+        {/* Logo / heading */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+          <Sparkles size={32} style={{ color: 'var(--accent)' }} />
+          <h1
             className="display-font"
-            style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--ink)' }}
+            style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--ink)', margin: 0 }}
           >
-            {t('header.title')}
-          </span>
+            CleanMarket
+          </h1>
         </div>
 
         {/* Tagline */}
-        <p style={{ color: 'var(--muted)', fontSize: '0.9rem', marginBottom: '2rem' }}>
-          {t('header.subtitle')}
-        </p>
-
-        {/* Sign-in prompt */}
-        <p style={{ color: 'var(--ink)', fontSize: '0.95rem', marginBottom: '1.25rem' }}>
+        <p style={{ color: 'var(--muted)', marginBottom: '2rem', fontSize: '1rem', lineHeight: 1.5 }}>
           {t('auth.sign_in_prompt')}
         </p>
 
         {/* Buttons */}
-        <div className="flex flex-col gap-3">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           <button
-            className="btn btn-primary w-full"
+            className="btn btn-primary"
+            style={{ width: '100%', padding: '0.75rem 1rem', fontSize: '1rem' }}
             onClick={() => app.auth.signIn('google')}
           >
             {t('auth.sign_in_google')}
           </button>
+
           <button
-            className="btn btn-secondary w-full"
+            className="btn btn-secondary"
+            style={{ width: '100%', padding: '0.75rem 1rem', fontSize: '1rem' }}
             onClick={() => app.auth.signIn()}
           >
             {t('auth.sign_in_github')}
