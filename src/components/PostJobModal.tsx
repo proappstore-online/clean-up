@@ -9,6 +9,7 @@ const ALLOWED_TYPES = ['image/jpeg', 'image/png']
 
 interface AuthUser {
   id: string
+  name: string
   login: string
   avatarUrl: string | null
   dateOfBirth: string | null
@@ -118,16 +119,16 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
       aria-modal="true"
       aria-label={t('post.heading')}
     >
-      <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl bg-white dark:bg-gray-800 shadow-xl">
-        <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 px-5 py-4">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+      <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl shadow-xl" style={{ background: 'var(--paper)', color: 'var(--ink)' }}>
+        <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid var(--line)' }}>
+          <h2 className="text-lg font-semibold" style={{ color: 'var(--ink)' }}>
             {t('post.heading')}
           </h2>
           <button
             type="button"
             onClick={onClose}
             aria-label={t('post.close_modal')}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+            className="btn btn-ghost"
           >
             ✕
           </button>
@@ -135,7 +136,7 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
 
         <form onSubmit={handleSubmit} className="p-5 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium mb-1" style={{ color: 'var(--ink)' }}>
               {t('post.title_label')}
             </label>
             <input
@@ -143,12 +144,12 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder={t('post.title_placeholder')}
-              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
+              className="input w-full"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium mb-1" style={{ color: 'var(--ink)' }}>
               {t('post.description_label')}
             </label>
             <textarea
@@ -156,12 +157,12 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
               onChange={(e) => setDescription(e.target.value)}
               placeholder={t('post.description_placeholder')}
               rows={4}
-              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+              className="input w-full resize-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium mb-1" style={{ color: 'var(--ink)' }}>
               {t('post.location_label')}
             </label>
             <LocationAutocomplete
@@ -170,11 +171,12 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
               onChange={setLocation}
               onSelect={(lat, lng) => setCoords({ lat, lng })}
               placeholder={t('post.location_placeholder')}
+              className="input w-full"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium mb-1" style={{ color: 'var(--ink)' }}>
               {t('post.photos_label', { count: MAX_PHOTOS })}
             </label>
             <div className="flex gap-2 flex-wrap">
@@ -183,13 +185,15 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
                   <img
                     src={url}
                     alt={t('post.preview_alt', { index: i + 1 })}
-                    className="w-20 h-20 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
+                    className="w-20 h-20 rounded-lg object-cover"
+                    style={{ border: '1px solid var(--line)' }}
                   />
                   <button
                     type="button"
                     onClick={() => removePhoto(i)}
                     aria-label={t('post.remove_photo', { index: i + 1 })}
-                    className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center"
+                    className="absolute -top-2 -right-2 w-5 h-5 rounded-full text-white text-xs flex items-center justify-center"
+                    style={{ background: 'var(--error)' }}
                   >
                     ✕
                   </button>
@@ -199,7 +203,8 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-20 h-20 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 text-gray-400 hover:border-blue-400 flex items-center justify-center text-sm"
+                  className="w-20 h-20 rounded-lg border-2 border-dashed flex items-center justify-center text-sm"
+                  style={{ borderColor: 'var(--line)', color: 'var(--muted)' }}
                 >
                   {t('post.add_photo')}
                 </button>
@@ -213,27 +218,27 @@ export function PostJobModal({ user, onClose, onPosted }: Props) {
               onChange={handleFiles}
               className="hidden"
             />
-            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+            <p className="mt-2 text-xs" style={{ color: 'var(--muted)' }}>
               {t('post.cover_hint')}
             </p>
           </div>
 
           {error && (
-            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+            <p className="text-sm" style={{ color: 'var(--error)' }}>{error}</p>
           )}
 
           <div className="flex justify-end gap-2 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300"
+              className="btn btn-secondary"
             >
               {t('post.cancel')}
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-4 py-2 text-sm rounded-lg bg-blue-600 text-white disabled:opacity-50"
+              className="btn btn-primary"
             >
               {submitting ? t('post.posting') : t('post.post')}
             </button>
