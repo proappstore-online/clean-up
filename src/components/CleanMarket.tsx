@@ -10,7 +10,6 @@ import { PostJobModal } from './PostJobModal'
 import { JobDetail } from './JobDetail'
 import { MyJobsView } from './MyJobsView'
 import { LanguageSwitcher } from './LanguageSwitcher'
-import { SignInScreen } from './SignInScreen'
 import type { Job } from '../lib/types'
 
 type View = 'list' | 'detail' | 'mine'
@@ -164,8 +163,7 @@ export function CleanMarket() {
     setJobs((prev) => prev.map((j) => (j.id === updated.id ? updated : j)))
   }
 
-  // Loading spinner (auth check in progress or migrations running)
-  if (loading || !ready) {
+  if (!ready) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
@@ -174,11 +172,6 @@ export function CleanMarket() {
         </div>
       </div>
     )
-  }
-
-  // Dedicated sign-in screen for logged-out users
-  if (!user) {
-    return <SignInScreen />
   }
 
   if (migrationError) {
@@ -192,7 +185,7 @@ export function CleanMarket() {
           <p className="text-sm mb-4" style={{ color: 'var(--muted)' }}>{t('errors.db_failed_body')}</p>
           <button
             onClick={() => window.location.reload()}
-            className="btn btn-primary"
+            className="btn btn-primary text-sm"
           >
             {t('errors.refresh')}
           </button>
@@ -201,8 +194,43 @@ export function CleanMarket() {
     )
   }
 
+  // ── Full-screen sign-in gate ──
+  if (!user && !loading && ready) {
+    return (
+      <div
+        className="relative min-h-screen flex items-center justify-center"
+        style={{ background: 'var(--paper)' }}
+      >
+        {/* Language switcher — accessible before sign-in */}
+        <div className="absolute top-4 right-4">
+          <LanguageSwitcher />
+        </div>
+
+        <div className="flex flex-col items-center gap-6 text-center px-6 max-w-sm w-full">
+          {/* Logo / title */}
+          <Sparkles size={40} style={{ color: 'var(--accent)' }} />
+          <h1 className="display-font text-3xl font-bold" style={{ color: 'var(--ink)' }}>
+            {t('header.title')}
+          </h1>
+          <p style={{ color: 'var(--muted)' }}>{t('header.subtitle')}</p>
+          <p className="text-sm" style={{ color: 'var(--muted)' }}>{t('auth.sign_in_prompt')}</p>
+
+          {/* Sign-in buttons */}
+          <div className="flex flex-col gap-3 w-full">
+            <button className="btn btn-primary" onClick={() => app.auth.signIn('google')}>
+              {t('auth.sign_in_google')}
+            </button>
+            <button className="btn btn-secondary" onClick={() => app.auth.signIn()}>
+              {t('auth.sign_in_github')}
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6 min-h-screen" style={{ backgroundColor: 'var(--paper)' }}>
+    <div className="max-w-5xl mx-auto px-4 py-6 min-h-screen" style={{ background: 'var(--paper)' }}>
       {/* ── Tab bar (visible on list/mine views) ── */}
       {view !== 'detail' && (
         <div className="flex gap-1 mb-6" style={{ borderBottom: '1px solid var(--line)' }}>
@@ -210,22 +238,18 @@ export function CleanMarket() {
             onClick={() => setView('list')}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
               view === 'list'
-                ? 'border-[var(--accent)]'
+                ? 'border-b-2'
                 : 'border-transparent'
             }`}
-            style={{ color: view === 'list' ? 'var(--accent)' : 'var(--muted)' }}
+            style={view === 'list' ? { borderColor: 'var(--accent)', color: 'var(--accent)' } : { borderColor: 'transparent', color: 'var(--muted)' }}
           >
             {t('nav.browse_jobs')}
           </button>
           {user && (
             <button
               onClick={() => setView('mine')}
-              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                view === 'mine'
-                  ? 'border-[var(--accent)]'
-                  : 'border-transparent'
-              }`}
-              style={{ color: view === 'mine' ? 'var(--accent)' : 'var(--muted)' }}
+              className="px-4 py-2 text-sm font-medium border-b-2 transition-colors"
+              style={view === 'mine' ? { borderColor: 'var(--accent)', color: 'var(--accent)' } : { borderColor: 'transparent', color: 'var(--muted)' }}
             >
               {t('nav.my_jobs')}
             </button>
@@ -246,12 +270,14 @@ export function CleanMarket() {
             </div>
             <div className="flex items-center gap-3">
               <LanguageSwitcher />
-              <button
-                onClick={() => setShowPostModal(true)}
-                className="btn btn-primary"
-              >
-                {t('jobs.post_button')}
-              </button>
+              {user && (
+                <button
+                  onClick={() => setShowPostModal(true)}
+                  className="btn btn-primary"
+                >
+                  {t('jobs.post_button')}
+                </button>
+              )}
             </div>
           </div>
 
