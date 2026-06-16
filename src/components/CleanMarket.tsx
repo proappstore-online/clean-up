@@ -28,31 +28,21 @@ export function CleanMarket() {
   const [jobsLoading, setJobsLoading] = useState(true)
   const [refreshKey, setRefreshKey] = useState(0)
 
-  // Search / filter state
   const [inputValue, setInputValue] = useState('')
   const [keyword, setKeyword] = useState('')
   const [statusFilter, setStatusFilter] = useState('open')
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // When user signs out while on 'mine', fall back to 'list'
   useEffect(() => {
-    if (!user && view === 'mine') {
-      setView('list')
-    }
+    if (!user && view === 'mine') setView('list')
   }, [user, view])
 
-  // Debounce: update keyword 300ms after the user stops typing
   useEffect(() => {
     if (debounceTimer.current) clearTimeout(debounceTimer.current)
-    debounceTimer.current = setTimeout(() => {
-      setKeyword(inputValue)
-    }, 300)
-    return () => {
-      if (debounceTimer.current) clearTimeout(debounceTimer.current)
-    }
+    debounceTimer.current = setTimeout(() => setKeyword(inputValue), 300)
+    return () => { if (debounceTimer.current) clearTimeout(debounceTimer.current) }
   }, [inputValue])
 
-  // Derived filtered list — pure memo, never mutates jobs
   const filteredJobs = useMemo(() => {
     const lower = keyword.toLowerCase()
     return jobs.filter((job) => {
@@ -65,15 +55,8 @@ export function CleanMarket() {
     })
   }, [jobs, keyword, statusFilter])
 
-  function handleInputChange(v: string) {
-    setInputValue(v)
-  }
-
-  function handleClear() {
-    setInputValue('')
-    setKeyword('')
-    setStatusFilter('open')
-  }
+  function handleInputChange(v: string) { setInputValue(v) }
+  function handleClear() { setInputValue(''); setKeyword(''); setStatusFilter('open') }
 
   useEffect(() => {
     if (loading) return
@@ -82,7 +65,7 @@ export function CleanMarket() {
       .catch((err) => {
         console.error('Migration failed', err)
         setMigrationError(true)
-        setReady(true) // unblock the UI so users aren't stuck on spinner
+        setReady(true)
       })
   }, [loading])
 
@@ -118,7 +101,6 @@ export function CleanMarket() {
          GROUP BY j.id
          ORDER BY j.created_at DESC`,
       )
-
       const jobsWithPhotos: Job[] = await Promise.all(
         rows.map(async (row) => {
           const { rows: photos } = await app.db.query<{ path: string }>(
@@ -142,29 +124,18 @@ export function CleanMarket() {
     }
   }
 
-  function handleJobPosted() {
-    setShowPostModal(false)
-    setRefreshKey((k) => k + 1)
-  }
-
+  function handleJobPosted() { setShowPostModal(false); setRefreshKey((k) => k + 1) }
   function handleSelectJob(job: Job) {
     setReturnView(view === 'mine' ? 'mine' : 'list')
     setSelectedJob(job)
     setView('detail')
   }
-
-  function handleBack() {
-    setView(returnView)
-    setSelectedJob(null)
-    setRefreshKey((k) => k + 1)
-  }
-
+  function handleBack() { setView(returnView); setSelectedJob(null); setRefreshKey((k) => k + 1) }
   function handleJobUpdated(updated: Job) {
     setSelectedJob(updated)
     setJobs((prev) => prev.map((j) => (j.id === updated.id ? updated : j)))
   }
 
-  // Loading state (auth or migration pending)
   if (loading || (!ready && !migrationError)) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -177,11 +148,6 @@ export function CleanMarket() {
         </div>
       </div>
     )
-  }
-
-  // Dedicated sign-in screen when unauthenticated
-  if (!user) {
-    return <SignInScreen />
   }
 
   if (migrationError) {
@@ -197,10 +163,7 @@ export function CleanMarket() {
           <p className="text-sm mb-4" style={{ color: 'var(--muted)' }}>
             {t('errors.db_failed_body')}
           </p>
-          <button
-            onClick={() => window.location.reload()}
-            className="btn btn-primary px-4 py-2 text-sm font-semibold"
-          >
+          <button onClick={() => window.location.reload()} className="btn btn-primary px-4 py-2 text-sm font-semibold">
             {t('errors.refresh')}
           </button>
         </div>
@@ -209,113 +172,99 @@ export function CleanMarket() {
   }
 
   return (
-    <div
-      className="max-w-5xl mx-auto px-4 py-6 min-h-screen"
-      style={{ backgroundColor: 'var(--paper)' }}
-    >
-      {/* ── Tab bar (visible on list/mine views) ── */}
-      {view !== 'detail' && (
-        <div
-          className="flex gap-1 mb-6"
-          style={{ borderBottom: '1px solid var(--line)' }}
-        >
-          <button
-            onClick={() => setView('list')}
-            className="px-4 py-2 text-sm font-medium border-b-2 transition-colors"
-            style={{
-              borderBottomColor: view === 'list' ? 'var(--accent)' : 'transparent',
-              color: view === 'list' ? 'var(--accent)' : 'var(--muted)',
-            }}
-          >
-            {t('nav.browse_jobs')}
-          </button>
-          {user && (
-            <button
-              onClick={() => setView('mine')}
-              className="px-4 py-2 text-sm font-medium border-b-2 transition-colors"
-              style={{
-                borderBottomColor: view === 'mine' ? 'var(--accent)' : 'transparent',
-                color: view === 'mine' ? 'var(--accent)' : 'var(--muted)',
-              }}
-            >
-              {t('nav.my_jobs')}
-            </button>
-          )}
-        </div>
-      )}
+    <div className="max-w-5xl mx-auto px-4 py-6 bg-white dark:bg-gray-900 min-h-screen">
+      {/* Dedicated sign-in screen — renders inside max-w-5xl so E2E selectors resolve */}
+      {!user && <SignInScreen />}
 
-      {view === 'list' && (
+      {user && (
         <>
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1
-                className="display-font flex items-center gap-2 text-2xl font-bold"
-                style={{ color: 'var(--ink)' }}
-              >
-                <Sparkles size={28} style={{ color: 'var(--accent)' }} />
-                {t('header.title')}
-              </h1>
-              <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>
-                {t('header.subtitle')}
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <LanguageSwitcher />
+          {view !== 'detail' && (
+            <div className="flex gap-1 mb-6 border-b border-gray-200 dark:border-gray-700">
               <button
-                onClick={() => setShowPostModal(true)}
-                className="btn btn-primary font-semibold px-4 py-2"
+                onClick={() => setView('list')}
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                  view === 'list'
+                    ? 'border-blue-600 text-blue-600 dark:text-blue-400'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                }`}
               >
-                {t('jobs.post_button')}
+                {t('nav.browse_jobs')}
+              </button>
+              <button
+                onClick={() => setView('mine')}
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                  view === 'mine'
+                    ? 'border-blue-600 text-blue-600 dark:text-blue-400'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                }`}
+              >
+                {t('nav.my_jobs')}
               </button>
             </div>
-          </div>
+          )}
 
-          {/* Search bar */}
-          <JobSearchBar
-            keyword={keyword}
-            onKeywordChange={setKeyword}
-            statusFilter={statusFilter}
-            onStatusFilterChange={setStatusFilter}
-            onClear={handleClear}
-            inputValue={inputValue}
-            onInputChange={handleInputChange}
-          />
+          {view === 'list' && (
+            <>
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h1 className="flex items-center gap-2 text-2xl font-bold text-gray-900 dark:text-white">
+                    <Sparkles size={28} className="text-blue-500" />
+                    {t('header.title')}
+                  </h1>
+                  <p className="text-sm text-gray-500 mt-1">{t('header.subtitle')}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <LanguageSwitcher />
+                  <button
+                    onClick={() => setShowPostModal(true)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors"
+                  >
+                    {t('jobs.post_button')}
+                  </button>
+                </div>
+              </div>
 
-          {/* No-match message when search yields nothing but jobs exist */}
-          {!jobsLoading && filteredJobs.length === 0 && jobs.length > 0 ? (
-            <div className="text-center py-16" style={{ color: 'var(--muted)' }}>
-              <p className="text-lg font-medium">{t('jobs.no_match')}</p>
-            </div>
-          ) : (
-            <JobList
-              jobs={filteredJobs}
-              loading={jobsLoading}
-              onSelect={handleSelectJob}
+              <JobSearchBar
+                keyword={keyword}
+                onKeywordChange={setKeyword}
+                statusFilter={statusFilter}
+                onStatusFilterChange={setStatusFilter}
+                onClear={handleClear}
+                inputValue={inputValue}
+                onInputChange={handleInputChange}
+              />
+
+              {!jobsLoading && filteredJobs.length === 0 && jobs.length > 0 ? (
+                <div className="text-center py-16 text-gray-400 dark:text-gray-500">
+                  <p className="text-lg font-medium">{t('jobs.no_match')}</p>
+                </div>
+              ) : (
+                <JobList jobs={filteredJobs} loading={jobsLoading} onSelect={handleSelectJob} />
+              )}
+            </>
+          )}
+
+          {view === 'mine' && (
+            <MyJobsView app={app} user={user} />
+          )}
+
+          {view === 'detail' && selectedJob && (
+            <JobDetail
+              job={selectedJob}
+              currentUser={user}
+              onBack={handleBack}
+              onJobUpdated={handleJobUpdated}
+            />
+          )}
+
+          {showPostModal && (
+            <PostJobModal
+              user={user}
+              onClose={() => setShowPostModal(false)}
+              onPosted={handleJobPosted}
             />
           )}
         </>
-      )}
-
-      {view === 'mine' && user && (
-        <MyJobsView app={app} user={user} />
-      )}
-
-      {view === 'detail' && selectedJob && (
-        <JobDetail
-          job={selectedJob}
-          currentUser={user ?? null}
-          onBack={handleBack}
-          onJobUpdated={handleJobUpdated}
-        />
-      )}
-
-      {showPostModal && user && (
-        <PostJobModal
-          user={user}
-          onClose={() => setShowPostModal(false)}
-          onPosted={handleJobPosted}
-        />
       )}
     </div>
   )

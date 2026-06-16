@@ -7,12 +7,9 @@ export function SignInScreen() {
   const { t } = useTranslation()
 
   return (
-    <div
-      className="relative min-h-screen flex items-center justify-center"
-      style={{ backgroundColor: 'var(--paper)' }}
-    >
+    <div className="relative flex items-center justify-center min-h-[70vh]">
       {/* Language switcher — accessible before sign-in */}
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-0 right-0">
         <LanguageSwitcher />
       </div>
 
@@ -39,16 +36,16 @@ export function SignInScreen() {
         {/* Buttons */}
         <div className="flex flex-col gap-3 w-full">
           <button
-            className="btn btn-primary"
-            style={{ width: '100%', padding: '0.75rem 1rem', fontSize: '1rem' }}
+            className="btn btn-primary w-full"
+            style={{ padding: '0.75rem 1rem', fontSize: '1rem' }}
             onClick={() => app.auth.signIn('google')}
           >
             {t('auth.sign_in_google')}
           </button>
 
           <button
-            className="btn btn-secondary"
-            style={{ width: '100%', padding: '0.75rem 1rem', fontSize: '1rem' }}
+            className="btn btn-secondary w-full"
+            style={{ padding: '0.75rem 1rem', fontSize: '1rem' }}
             onClick={() => app.auth.signIn()}
           >
             {t('auth.sign_in_github')}
