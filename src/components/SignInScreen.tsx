@@ -1,52 +1,45 @@
 import { Sparkles } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { app } from '../lib/app'
+import { LanguageSwitcher } from './LanguageSwitcher'
 
 export function SignInScreen() {
   const { t } = useTranslation()
 
   return (
     <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '100vh',
-        padding: '2rem',
-        backgroundColor: 'var(--paper)',
-      }}
+      className="relative min-h-screen flex items-center justify-center"
+      style={{ backgroundColor: 'var(--paper)' }}
     >
-      <div
-        className="card"
-        style={{
-          maxWidth: '420px',
-          width: '100%',
-          padding: '2.5rem 2rem',
-          textAlign: 'center',
-        }}
-      >
-        {/* Logo / heading */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-          <Sparkles size={32} style={{ color: 'var(--accent)' }} />
-          <h1
-            className="display-font"
-            style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--ink)', margin: 0 }}
-          >
-            CleanMarket
-          </h1>
-        </div>
+      {/* Language switcher — accessible before sign-in */}
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher />
+      </div>
 
-        {/* Tagline */}
-        <p style={{ color: 'var(--muted)', marginBottom: '2rem', fontSize: '1rem', lineHeight: 1.5 }}>
+      <div className="flex flex-col items-center gap-6 text-center px-6 max-w-sm w-full">
+        {/* Logo / heading */}
+        <Sparkles size={40} style={{ color: 'var(--accent)' }} />
+        <h1
+          className="display-font text-3xl font-bold"
+          style={{ color: 'var(--ink)' }}
+        >
+          {t('header.title')}
+        </h1>
+
+        {/* Subtitle */}
+        <p style={{ color: 'var(--muted)', fontSize: '1rem', lineHeight: 1.5 }}>
+          {t('header.subtitle')}
+        </p>
+
+        {/* Sign-in prompt */}
+        <p className="text-sm" style={{ color: 'var(--muted)' }}>
           {t('auth.sign_in_prompt')}
         </p>
 
         {/* Buttons */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        <div className="flex flex-col gap-3 w-full">
           <button
             className="btn btn-primary"
-            style={{ width: '100%', padding: '0.75rem 1rem', fontSize: '1rem' }}
             onClick={() => app.auth.signIn('google')}
           >
             {t('auth.sign_in_google')}
@@ -54,7 +47,6 @@ export function SignInScreen() {
 
           <button
             className="btn btn-secondary"
-            style={{ width: '100%', padding: '0.75rem 1rem', fontSize: '1rem' }}
             onClick={() => app.auth.signIn()}
           >
             {t('auth.sign_in_github')}
