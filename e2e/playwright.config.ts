@@ -12,6 +12,7 @@ export default defineConfig({
   reporter: [['github'], ['list'], ['json', { outputFile: 'results.json' }]],
   use: {
     baseURL: process.env.E2E_BASE_URL,
+    navigationTimeout: 30000,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },

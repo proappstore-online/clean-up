@@ -5,11 +5,12 @@ import { test as base, expect, type Page } from '@playwright/test'
 export const hasSession = !!process.env.SESSION_STORAGE_STATE
 
 export const test = base.extend<{ app: Page }>({
-  app: async ({ browser }, use) => {
+  app: async ({ browser, navigationTimeout }, use) => {
     const contextOptions = hasSession
       ? { storageState: process.env.SESSION_STORAGE_STATE }
       : {}
     const context = await browser.newContext(contextOptions)
+    context.setDefaultNavigationTimeout(navigationTimeout)
     const page = await context.newPage()
     // Prefer E2E_BASE_URL (set by CI to the live deployed app), then APP_URL,
     // then fall back to localhost for local development.
@@ -17,7 +18,7 @@ export const test = base.extend<{ app: Page }>({
       process.env.E2E_BASE_URL ??
       process.env.APP_URL ??
       'http://localhost:5173'
-    await page.goto(baseUrl, { waitUntil: 'networkidle' })
+    await page.goto(baseUrl, { waitUntil: 'load' })
     await use(page)
     await context.close()
   },

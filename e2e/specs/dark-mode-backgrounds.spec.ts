@@ -316,7 +316,7 @@ test('AC-8 — app mounts with no console errors indicating broken imports', asy
   })
 
   // Navigate fresh
-  await app.reload({ waitUntil: 'networkidle' })
+  await app.reload({ waitUntil: 'load' })
   await app.waitForSelector('#root', { timeout: 10_000 })
 
   // Allow a short settle time for any synchronous errors to flush
