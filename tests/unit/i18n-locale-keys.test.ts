@@ -9,12 +9,12 @@ import ar from '../../src/locales/ar.json'
 import yue from '../../src/locales/yue.json'
 import pa from '../../src/locales/pa.json'
 import el from '../../src/locales/el.json'
-import it from '../../src/locales/it.json'
+import italian from '../../src/locales/it.json'
 import hi from '../../src/locales/hi.json'
 
 const REQUIRED_KEYS = ['add_photo', 'remove_photo', 'photo_management_hint'] as const
 
-const locales: Record<string, any> = { en, zh, vi, ar, yue, pa, el, it, hi }
+const locales: Record<string, any> = { en, zh, vi, ar, yue, pa, el, it: italian, hi }
 
 describe('i18n detail.* photo keys present in all 9 locales (criterion #7)', () => {
   for (const [name, data] of Object.entries(locales)) {

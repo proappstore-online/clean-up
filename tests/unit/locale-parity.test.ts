@@ -7,7 +7,7 @@ import ar from '../../src/locales/ar.json'
 import yue from '../../src/locales/yue.json'
 import pa from '../../src/locales/pa.json'
 import el from '../../src/locales/el.json'
-import it from '../../src/locales/it.json'
+import italian from '../../src/locales/it.json'
 import hi from '../../src/locales/hi.json'
 
 type Json = Record<string, unknown>
@@ -39,7 +39,7 @@ function placeholders(str: string): string[] {
   return matches.map((m) => m.replace(/[{}\s]/g, '')).sort()
 }
 
-const ALL_LOCALES: Record<string, Json> = { zh, vi, ar, yue, pa, el, it, hi }
+const ALL_LOCALES: Record<string, Json> = { zh, vi, ar, yue, pa, el, it: italian, hi }
 const EN_KEYS = leafKeys(en as Json)
 
 describe('locale parity — en.json is the source of truth', () => {

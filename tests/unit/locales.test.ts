@@ -14,10 +14,10 @@ import ar from '../../src/locales/ar.json'
 import yue from '../../src/locales/yue.json'
 import pa from '../../src/locales/pa.json'
 import el from '../../src/locales/el.json'
-import it from '../../src/locales/it.json'
+import italian from '../../src/locales/it.json'
 import hi from '../../src/locales/hi.json'
 
-const LOCALES: Record<string, any> = { en, zh, vi, ar, yue, pa, el, it, hi }
+const LOCALES: Record<string, any> = { en, zh, vi, ar, yue, pa, el, it: italian, hi }
 const LOCALE_NAMES = Object.keys(LOCALES)
 
 // Project memory: 9 target languages.

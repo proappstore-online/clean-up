@@ -26,6 +26,9 @@ jobs:
 
       - run: pnpm install --no-frozen-lockfile
 
+      - name: Test (including public asset references)
+        run: pnpm test
+
       - name: Build
         env:
           VITE_COMMIT_SHA: ${{ github.sha }}

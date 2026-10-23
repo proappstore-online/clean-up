@@ -9,7 +9,7 @@ import ar from '../../src/locales/ar.json'
 import yue from '../../src/locales/yue.json'
 import pa from '../../src/locales/pa.json'
 import el from '../../src/locales/el.json'
-import it from '../../src/locales/it.json'
+import italian from '../../src/locales/it.json'
 import hi from '../../src/locales/hi.json'
 
 // Integration: exercise the i18next runtime exactly as the app configures it,
@@ -28,7 +28,7 @@ const resources = {
   yue: { translation: yue },
   pa: { translation: pa },
   el: { translation: el },
-  it: { translation: it },
+  it: { translation: italian },
   hi: { translation: hi },
 } as const
 
