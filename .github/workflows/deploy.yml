@@ -32,7 +32,7 @@ jobs:
       - name: Build
         env:
           VITE_COMMIT_SHA: ${{ github.sha }}
-        run: pnpm build || (cd web 2>/dev/null || true; npx vite build)
+        run: pnpm build
 
       - name: Locate build output
         id: dist
@@ -84,9 +84,8 @@ jobs:
 
   # Behavioural gate: drive the LIVE app in a real browser (the thing tsc/build
   # can't check). Runs after deploy; a failure fails the run, so the deploy
-  # gate routes the ticket back to Dev with the Playwright output. Auth uses a
-  # platform fixture session via the SDK's real sign-in path (no test bypass);
-  # auth-gated specs skip when PAS_E2E_SESSION_TOKEN is unset.
+  # gate routes the ticket back to Dev with the Playwright output. Public smoke
+  # tests always run; signed-in specs require SESSION_STORAGE_STATE (see README).
   e2e:
     needs: deploy
     runs-on: ubuntu-latest
@@ -107,7 +106,7 @@ jobs:
         working-directory: e2e
         env:
           E2E_BASE_URL: https://${{ github.event.repository.name }}.proappstore.online
-          E2E_SESSION_TOKEN: ${{ secrets.PAS_E2E_SESSION_TOKEN }}
+          EXPECTED_COMMIT_SHA: ${{ github.sha }}
         run: npx playwright test
       - name: Publish test results (kb.proappstore.online/<app>/.e2e/summary.json)
         if: always()

@@ -6,18 +6,18 @@ export const hasSession = !!process.env.SESSION_STORAGE_STATE
 
 export const test = base.extend<{ app: Page }>({
   app: async ({ browser, navigationTimeout }, use) => {
-    const contextOptions = hasSession
-      ? { storageState: process.env.SESSION_STORAGE_STATE }
-      : {}
-    const context = await browser.newContext(contextOptions)
-    context.setDefaultNavigationTimeout(navigationTimeout)
-    const page = await context.newPage()
-    // Prefer E2E_BASE_URL (set by CI to the live deployed app), then APP_URL,
-    // then fall back to localhost for local development.
     const baseUrl =
       process.env.E2E_BASE_URL ??
       process.env.APP_URL ??
       'http://localhost:5173'
+    const contextOptions = hasSession
+      ? { storageState: process.env.SESSION_STORAGE_STATE }
+      : {}
+    const context = await browser.newContext({ ...contextOptions, baseURL: baseUrl })
+    context.setDefaultNavigationTimeout(navigationTimeout)
+    const page = await context.newPage()
+    // Prefer E2E_BASE_URL (set by CI to the live deployed app), then APP_URL,
+    // then fall back to localhost for local development.
     await page.goto(baseUrl, { waitUntil: 'load' })
     await use(page)
     await context.close()

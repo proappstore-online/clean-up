@@ -53,9 +53,13 @@ describe('public asset references', () => {
 
   it('resolves every asset in a fresh production artifact', () => {
     const outDir = join(temporary, 'dist')
+    const commit = '0123456789abcdef0123456789abcdef01234567'
     execFileSync(process.execPath, [join(root, 'node_modules/vite/bin/vite.js'),
-      'build', '--outDir', outDir, '--emptyOutDir'], { cwd: root, stdio: 'pipe' })
+      'build', '--outDir', outDir, '--emptyOutDir'], {
+      cwd: root, stdio: 'pipe', env: { ...process.env, VITE_COMMIT_SHA: commit },
+    })
     checkAssets(readFileSync(join(outDir, 'index.html'), 'utf8'), [outDir])
+    expect(JSON.parse(readFileSync(join(outDir, 'build.json'), 'utf8'))).toEqual({ commit })
   }, 30_000)
 
   it('rejects the original missing Vite favicon, including URL query/hash suffixes', () => {

@@ -4,3 +4,6 @@ dist/
 .env.local
 *.local
 .DS_Store
+e2e/results.json
+e2e/test-results/
+e2e/playwright-report/
